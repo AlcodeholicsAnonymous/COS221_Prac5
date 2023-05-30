@@ -17,6 +17,8 @@ header('Content-Type: application/json');
 $postData = file_get_contents('php://input');
 $jsonData = json_decode($postData);
 
+
+
 try {
     $DBConnection = mysqli_connect($host, $username, $password, $database);
 } catch (Exception $th) {
@@ -25,7 +27,7 @@ try {
 
 
 //validation
-if(!isset($jsonData->type)){
+if(!isset($jsonData->query)){
     error("no query type");
 }
 
@@ -39,7 +41,7 @@ if($jsonData->apikey != "69"){
 
 
 
-switch ($jsonData->type) {
+switch ($jsonData->query) {
     case "SELECT":
         selectQuery($jsonData, $DBConnection);
         break;
@@ -70,17 +72,30 @@ function updateQuery($jsonData, $DBConnection){
     
 }
 
+//this query returns the whole picture thing you showed in the discord meeting
+/*$query = "SELECT Wine.image, Wine.Name, Wine.Type, Winery.Name, Location.Country, Wine.Price, Wine.Year FROM Wine JOIN Winery
+ ON Wine.Winery_ID = Winery.Winery_ID JOIN Location ON Winery.Location_ID = Location.Location_ID;";
 
+//$query = "SELECT * FROM Wine;";
+$result = mysqli_query($DBConnection, $query);
+
+    $output = $result->fetch_all(MYSQLI_ASSOC);
+
+//step 5: build response
+$returnJson = array("status"=>"success", "timestamp"=>time(), "data"=>$output);
+echo JSON_encode($returnJson);*/
 function selectQuery($jsonData, $DBConnection){
-    $DBQuery = "SELECT ";
-
+    //$DBQuery = "SELECT ";
+    $DBQuery = "SELECT Wine.Image, Wine.Name, Wine.Type, Winery.Name, Location.Country, Wine.Price, Wine.Year FROM Wine JOIN Winery
+    ON Wine.Winery_ID = Winery.Winery_ID JOIN Location ON Winery.Location_ID = Location.Location_ID ";
+    
     if(isset($jsonData->distinct) && ($jsonData->distinct == "true")){
         $DBQuery .= "DISTINCT ";
     }
 
 
     // Checking to see if there are any specific return columns
-    if (isset($jsonData->return)){
+    /*if (isset($jsonData->return)){
         if (is_array($jsonData->return) && count($jsonData->return) > 0)
         {
             $returnColumns = implode(", ", $jsonData->return);
@@ -90,12 +105,12 @@ function selectQuery($jsonData, $DBConnection){
         {
             $DBQuery .= "* ";
         }
-    }
+    }*/
     
 
 
     // Checking to see which table the data is coming from
-    if ($jsonData->from == "GetWines")
+    /*if ($jsonData->from == "GetWines")
     {
         $DBQuery .= "FROM Wine ";
     }
@@ -114,11 +129,11 @@ function selectQuery($jsonData, $DBConnection){
     else if ($jsonData->from == "GetRatings")
     {
         $DBQuery .= "FROM Rating ";
-    }
+    }*/
 
 
     // Checking to see if there are any seacrh conditions
-    if ($jsonData->search && is_object($jsonData->search)) 
+    /*if ($jsonData->search && is_object($jsonData->search)) 
     {
         $DBQuery .= " WHERE ";
         $searchArray = (array) $jsonData->search;
@@ -145,7 +160,13 @@ function selectQuery($jsonData, $DBConnection){
             }
             $i++;
         }
+    }*/
+
+    if (isset($jsonData->Type))
+    {
+        $DBQuery .= " WHERE Wine.Type = '" . $jsonData->Type . "'";
     }
+
 
 
     if($jsonData->sort)
@@ -166,14 +187,15 @@ function selectQuery($jsonData, $DBConnection){
 
     $DBQuery .= ";";
 
+    /*
     if ($jsonData->type == "CustomQuery" && $jsonData->Query)
     {
         $DBQuery = $jsonData->Query;
     }
-    console.log($DBQuery);
+    console.log($DBQuery);*/
 
     // Putting Together the statement and executing it
-    $stmt = mysqli_prepare($DBConnection, $DBQuery);
+    /*$stmt = mysqli_prepare($DBConnection, $DBQuery);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
 
@@ -206,7 +228,17 @@ function selectQuery($jsonData, $DBConnection){
         $json = json_encode($response, JSON_PRETTY_PRINT);
         header('Content-Type: application/json');
         echo $json;
-    }
+    }*/
+    
+
+    $result = mysqli_query($DBConnection, $DBQuery);
+
+    $output = $result->fetch_all(MYSQLI_ASSOC);
+
+    //step 5: build response
+    $returnJson = array("status"=>"success", "timestamp"=>time(), "data"=>$output);
+    echo JSON_encode($returnJson);
+
 }
 
 
