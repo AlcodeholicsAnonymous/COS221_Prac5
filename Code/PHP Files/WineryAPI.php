@@ -2,7 +2,7 @@
 
 $host = "wheatley.cs.up.ac.za";
 $username = "u20743956";
-$password = "Iwantinnow@34"; // Remember to include password
+$password = "Iwantinnow@34";
 $database = "u20743956_Wines";
 
 //expect json data
@@ -23,12 +23,13 @@ if(!isset($jsonData->type)){
     error("no query type");
 }
 
+if(!isset($jsonData->apikey)){
+    error("no api key");
+}
 
-
-
-
-
-
+if($jsonData->apikey != "69"){
+    error("invalid api key");
+}
 
 switch ($jsonData->type) {
     case "SELECT":
