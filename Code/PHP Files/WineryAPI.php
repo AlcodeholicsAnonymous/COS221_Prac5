@@ -74,36 +74,44 @@ function updateQuery($jsonData, $DBConnection){
 function selectQuery($jsonData, $DBConnection){
     $DBQuery = "SELECT ";
 
+    if(isset($jsonData->distinct) && ($jsonData->distinct == "true")){
+        $DBQuery .= "DISTINCT ";
+    }
+
+
     // Checking to see if there are any specific return columns
-    if (is_array($jsonData->return) && count($jsonData->return) > 0)
-    {
-        $returnColumns = implode(", ", $jsonData->return);
-        $DBQuery .= $returnColumns . " ";
+    if (isset($jsonData->return)){
+        if (is_array($jsonData->return) && count($jsonData->return) > 0)
+        {
+            $returnColumns = implode(", ", $jsonData->return);
+            $DBQuery .= $returnColumns . " ";
+        }
+        else
+        {
+            $DBQuery .= "* ";
+        }
     }
-    else
-    {
-        $DBQuery .= "* ";
-    }
+    
 
 
     // Checking to see which table the data is coming from
-    if ($jsonData->table == "GetWines")
+    if ($jsonData->from == "GetWines")
     {
         $DBQuery .= "FROM Wine ";
     }
-    else if ($jsonData->type == "GetWineries")
+    else if ($jsonData->from == "GetWineries")
     {
         $DBQuery .= "FROM Winery ";
     }
-    else if ($jsonData->type == "GetLocations")
+    else if ($jsonData->from == "GetLocations")
     {
         $DBQuery .= "FROM Location ";
     }
-    else if ($jsonData->type == "GetUsers")
+    else if ($jsonData->from == "GetUsers")
     {
         $DBQuery .= "FROM User ";
     }
-    else if ($jsonData->type == "GetRatings")
+    else if ($jsonData->from == "GetRatings")
     {
         $DBQuery .= "FROM Rating ";
     }
