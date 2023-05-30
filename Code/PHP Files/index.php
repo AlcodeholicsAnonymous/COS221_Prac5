@@ -7,18 +7,9 @@ $database = "u20743956_Wines";
 
 //expect json data
 header('Content-Type: application/json');
-
-if (function_exists('mysqli_connect')) 
-{
-    echo "mysqli is installed";
-}
-else
-{
-  echo " Enable Mysqli support in your PHP installation "; 
-}
 // $postData = file_get_contents('php://input');
 $postData = '{
-    "type": "getWines",
+    "type": "SELECT",
     "return": "*",
     "limit": 5
 }';
@@ -197,4 +188,3 @@ function error($msg){
     return JSON_encode($error);
     die();
 }
-?>
