@@ -10,6 +10,7 @@ header('Content-Type: application/json');
 // $postData = file_get_contents('php://input');
 $postData = '{
     "type": "SELECT",
+    "table": "GetWines",
     "return": "*",
     "limit": 5
 }';
@@ -144,7 +145,7 @@ function selectQuery($jsonData, $DBConnection){
     {
         $DBQuery = $jsonData->Query;
     }
-    console.log($DBQuery);
+    // console.log($DBQuery);
 
     // Putting Together the statement and executing it
     $stmt = mysqli_prepare($DBConnection, $DBQuery);
