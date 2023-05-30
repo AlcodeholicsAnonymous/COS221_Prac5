@@ -2,52 +2,53 @@
 var cardContainer = document.getElementById("WineContainer");
 function APIRequest(Request)
 {
-    // Request = 
-    // {
-    //     type: "getWines",
-    //     return: "*",
-    //     limit: 5
-    // };
-    // const xhttp = new XMLHttpRequest();
-    // xhttp.onload = function () 
-    // {
-    //     let ReturnData = JSON.parse(this.responseText)
-    //     console.log(ReturnData);
+    Request = 
+    {
+        type: "SELECT",
+        table: "GetWines",
+        return: "*",
+        limit: 5
+    };
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function () 
+    {
+        let ReturnData = JSON.parse(this.responseText)
+        console.log(ReturnData);
 
-    //     if (ReturnData.status == "error") 
-    //     {
-    //         const card = generateNoneFound()
-    //         cardContainer.appendChild(card);
-    //     }
-    //     else 
-    //     {
+        if (ReturnData.status == "error") 
+        {
+            const card = generateNoneFound()
+            cardContainer.appendChild(card);
+        }
+        else 
+        {
             for (let index = 0; index < 1; index++) 
             {
-                // if (ReturnData.data[index] && typeof ReturnData.data[index].Name !== 'undefined') 
-                // {
+                if (ReturnData.data[index] && typeof ReturnData.data[index].Name !== 'undefined') 
+                {
                     let card = GenerateWineCard
                     (
-                        // ReturnData.data[index].Image, ReturnData.data[index].Name,
-                        // ReturnData.data[index].Type, ReturnData.data[index].Winery,
-                        // ReturnData.data[index].Country, ReturnData.data[index].Price,
-                        // ReturnData.data[index].Year
-                        "https://images.vivino.com/thumbs/nC9V6L2mQQSq0s-wZLcaxw_pb_x300.png", 
-                        "Amarone della Valpolicella",
-                        "Red", 
-                        "Ernesto Ruffo", 
-                        "Italy", 
-                        "R1000", 
-                        "2005"
+                        ReturnData.data[index].Image, ReturnData.data[index].Name,
+                        ReturnData.data[index].Type, ReturnData.data[index].Winery,
+                        ReturnData.data[index].Country, ReturnData.data[index].Price,
+                        ReturnData.data[index].Year
+                        // "https://images.vivino.com/thumbs/nC9V6L2mQQSq0s-wZLcaxw_pb_x300.png", 
+                        // "Amarone della Valpolicella",
+                        // "Red", 
+                        // "Ernesto Ruffo", 
+                        // "Italy", 
+                        // "R1000", 
+                        // "2005"
                     );
 
                     cardContainer.appendChild(card);
-                // }
+                }
             }
-    //     }
-    // }
-    // xhttp.open("POST", "C:/xampp/htdocs/Code/PHP/WineryAPI", true);
-    // xhttp.send(JSON.stringify(Request));
-    // console.log(JSON.stringify(Request));
+        }
+    }
+    xhttp.open("POST", "http://127.0.0.1:8080", true);
+    xhttp.send(JSON.stringify(Request));
+    console.log(JSON.stringify(Request));
 }
 
 function GenerateWineCard(image, name, type, winery, country, price, year)
