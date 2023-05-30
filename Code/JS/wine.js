@@ -21,7 +21,7 @@ function APIRequest(Request)
     //     }
     //     else 
     //     {
-            for (let index = 0; index < 9; index++) 
+            for (let index = 0; index < 1; index++) 
             {
                 // if (ReturnData.data[index] && typeof ReturnData.data[index].Name !== 'undefined') 
                 // {
@@ -99,4 +99,16 @@ function GenerateWineCard(image, name, type, winery, country, price, year)
     </div>
 `;
     return card;
+}
+
+function ClearFilters()
+{
+    console.log("Clearing Filters");
+    document.getElementById("WineType").value = "";
+    document.getElementById("Winery").value = "";
+    document.getElementById("Country").value = "";
+    document.getElementById("PriceFrom").value = "";
+    document.getElementById("PriceTo").value = "";
+    document.getElementById("YearFrom").value = "";
+    document.getElementById("YearTo").value = "";
 }

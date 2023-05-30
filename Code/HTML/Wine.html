@@ -19,7 +19,7 @@
                 <a href="#" class="a">
                     Wines
                 </a>
-                <a href="#" class="a">
+                <a href="../HTML/wineries.html" class="a">
                     Wineries
                 </a>
                 <a href="#" class="a">
@@ -35,27 +35,31 @@
                 <div style="font-size: 4.5vh;">Filters</div>
                 <div>
                     <label>Wine Type</label>
-                    <input type="text" class="Input">
+                    <input type="text" class="Input" id="WineType">
                 </div>
                 <div>
                     <label>Winery</label>
-                    <input type="text" class="Input">
+                    <input type="text" class="Input" id="Winery">
                 </div>
                 <div>
                     <label>Country</label>
-                    <input type="text" class="Input">
+                    <input type="text" class="Input" id="Country">
                 </div>
                 <div>
                     <label>Price</label> <br>
-                    <input type="number" class="AgeInput"> to <input type="number" class="AgeInput">
+                    <input type="number" class="AgeInput" id="PriceFrom"> 
+                    to 
+                    <input type="number" class="AgeInput" id="PriceTo">
                 </div>
                 <div>
                     <label>Wine Year</label><br>
-                    <input type="number" class="AgeInput"> to <input type="number" class="AgeInput">
+                    <input type="number" class="AgeInput" id="YearFrom"> 
+                    to 
+                    <input type="number" class="AgeInput" id="YearTo">
                 </div>
                 <div class="ButtonContainer">
                     <button class="Button">Apply Filters</button>
-                    <button class="Button">Clear Filters</button>
+                    <button class="Button" onclick="ClearFilters()">Clear Filters</button>
                 </div>
             </div>
             <div class="WineContainer" id="WineContainer">
