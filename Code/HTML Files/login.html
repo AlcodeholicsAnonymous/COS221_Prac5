@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <link rel="stylesheet" href="../CSS Files/login.css">
+  <link rel="stylesheet" href="../CSS Files/animate.css">
   <title>Winery Login</title>
 </head>
 <body>
@@ -9,22 +10,22 @@
         <div class="form-box">
             <form action="" id = "login_form"> 
                 <!-- Add the link to a php login validation form -->
-                <h2>Login</h2>
-                <div class="inputbox">
+                <h2 class="hidden">Login</h2>
+                <div class="inputbox hidden">
                     <input type="text" required>
                     <label for="">Email</label>
                 </div>
-                <div class="inputbox">
+                <div class="inputbox hidden">
                     <input type="password" required>
                     <label for="">Password</label>
                 </div>
             </form>
             <div>
-                <div>
+                <div class="hidden">
                     <a class="forget" href="#">Forget Password</a>
                 </div>
-                <button type="submit" form = "login_form">Log in</button>
-                <div class="register">
+                <button class="hidden" type="submit" form = "login_form">Log in</button>
+                <div class="register hidden" >
                     <p>Don't have a account: <a href="./Register.html">Register</a></p>
                 </div>
             </div>
