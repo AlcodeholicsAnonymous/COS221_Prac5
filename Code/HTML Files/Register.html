@@ -8,68 +8,70 @@
 
   <body>
     <div class="Container">
-      <div class="form-box">
-        <form action="" id="register_form" onsubmit="return validateForm();">
-          <!-- Add the link to a php Register validation form -->
-          <h2>Register</h2>
-          <div class="inputbox">
-            <input type="text" id="name" required>
-            <label for="">Name</label>
-          </div>
-          <div class="inputbox">
-            <input type="text" id="surname" required>
-            <label for="">Surname</label>
-          </div>
-          <div class="inputbox">
-            <input type="text" id="email" required>
-            <label for="">Email</label>
-          </div>
-          <div class="inputbox">
-            <input type="password" id="password" required>
-            <label for="">Password</label>
-          </div>
-          <div class="inputbox">
-            <input type="password" id="confirm_password" required>
-            <label for="">Confirm Password</label>
-          </div>
-        </form>
-        <div>
-          <button type="submit" form="register_form">Register</button>
-          <div class="register">
-            <p>Already have a account: <a href="./login.html">Login</a></p>
-          </div>
+        <div class="form-box">
+            <div class="hidden">
+                <form action="" id="register_form" onsubmit="return validateForm();">
+                <!-- Add the link to a php Register validation form -->
+                <h2>Register</h2>
+                <div class="inputbox">
+                    <input type="text" id="name" required>
+                    <label for="">Name</label>
+                </div>
+                <div class="inputbox">
+                    <input type="text" id="surname" required>
+                    <label for="">Surname</label>
+                </div>
+                <div class="inputbox">
+                    <input type="text" id="email" required>
+                    <label for="">Email</label>
+                </div>
+                <div class="inputbox">
+                    <input type="password" id="password" required>
+                    <label for="">Password</label>
+                </div>
+                <div class="inputbox">
+                    <input type="password" id="confirm_password" required>
+                    <label for="">Confirm Password</label>
+                </div>
+                </form>
+                <div>
+                <button type="submit" form="register_form">Register</button>
+                <div class="register">
+                    <p>Already have a account: <a href="./login.html">Login</a></p>
+                </div>
+                </div>
+                <script>
+                function validateForm() {
+                    const emailInput = document.getElementById("email");
+                    const email = emailInput.value;
+                    const emailRegex = /^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/gm;
+
+                    if (!emailRegex.test(email)) {
+                    alert("Invalid email address");
+                    emailInput.focus();
+                    return false;
+                    }
+                    const passwordInput = document.getElementById("password");
+                    const password = passwordInput.value;
+                    const passwordRegex = /^(?=.*\d)(?=.*[^\w\s])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+
+                    if (!passwordRegex.test(password)) {
+                    alert("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit and one symbol");
+                    passwordInput.focus();
+                    return false;
+                    }
+
+                    const confirmPasswordInput = document.getElementById("confirm_password");
+                    if (password !== confirmPasswordInput.value) {
+                    alert("Passwords do not match");
+                    confirmPasswordInput.focus();
+                    return false;
+                    }
+                    return true;
+                }
+                </script>
+            </div>
         </div>
-        <script>
-          function validateForm() {
-            const emailInput = document.getElementById("email");
-            const email = emailInput.value;
-            const emailRegex = /^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/gm;
-
-            if (!emailRegex.test(email)) {
-              alert("Invalid email address");
-              emailInput.focus();
-              return false;
-            }
-            const passwordInput = document.getElementById("password");
-            const password = passwordInput.value;
-            const passwordRegex = /^(?=.*\d)(?=.*[^\w\s])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-
-            if (!passwordRegex.test(password)) {
-              alert("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit and one symbol");
-              passwordInput.focus();
-              return false;
-            }
-
-            const confirmPasswordInput = document.getElementById("confirm_password");
-            if (password !== confirmPasswordInput.value) {
-              alert("Passwords do not match");
-              confirmPasswordInput.focus();
-              return false;
-            }
-            return true;
-          }
-        </script>
-      </div>
     </div>
     <script defy src="../JS/animation.js"></script>
   </body>
