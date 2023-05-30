@@ -2,7 +2,7 @@
 
 $host = "localhost";
 $username = "u20743956";
-$password = ""; // Remember to include password
+$password = "Iwantinnow@34"; // Remember to include password
 $database = "u20743956_Wines";
 
 $DBConnection = new mysqli($host, $username, $password, $database);

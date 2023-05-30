@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wines</title>
+    <link rel="stylesheet" href="../CSS/Wine.css">
+</head>
+
+<body onload="APIRequest()">
+    <div class="Container">
+        <div class="Navbar">
+            <div class="Logo">
+                <!-- <img src="/Components/Images/Logo.png" alt="Logo"> -->
+            </div>
+            <li class="NavSpacing">
+                <a href="#" class="a">
+                    Wines
+                </a>
+                <a href="#" class="a">
+                    Wineries
+                </a>
+                <a href="#" class="a">
+                    Wine Routes
+                </a>
+                <a href="#" class="a">
+                    Login
+                </a>
+            </li>
+        </div>
+        <div class="InfoContainer">
+            <div class="FilterContainer">
+                <div style="font-size: 4.5vh;">Filters</div>
+                <div>
+                    <label>Wine Type</label>
+                    <input type="text" class="Input">
+                </div>
+                <div>
+                    <label>Winery</label>
+                    <input type="text" class="Input">
+                </div>
+                <div>
+                    <label>Country</label>
+                    <input type="text" class="Input">
+                </div>
+                <div>
+                    <label>Price</label> <br>
+                    <input type="number" class="AgeInput"> to <input type="number" class="AgeInput">
+                </div>
+                <div>
+                    <label>Wine Year</label><br>
+                    <input type="number" class="AgeInput"> to <input type="number" class="AgeInput">
+                </div>
+                <div class="ButtonContainer">
+                    <button class="Button">Apply Filters</button>
+                    <button class="Button">Clear Filters</button>
+                </div>
+            </div>
+            <div class="WineContainer" id="WineContainer">
+                <!-- <div class="Wine">
+                    <img class="WineImage" 
+                        src="https://images.vivino.com/thumbs/nC9V6L2mQQSq0s-wZLcaxw_pb_x300.png" 
+                        alt="Wine 1"
+                    >
+                    <div class="WineInfo">
+                        <h2>Amarone della Valpolicella</h2>
+                        <div class="WineInfoContainer">
+                            <table>
+                                <tr>
+                                    <td>Wine Type:</td>
+                                    <td>Red</td>
+                                </tr>
+                                <tr>
+                                    <td>Winery:</td>
+                                    <td>Ernesto Ruffo</td>
+                                </tr>
+                                <tr>
+                                    <td>Country:</td>
+                                    <td>Italy</td>
+                                </tr>
+                                <tr>
+                                    <td>Price:</td>
+                                    <td>R1000</td>
+                                </tr>
+                                <tr>
+                                    <td>Year:</td>
+                                    <td>2005</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>                 -->
+            </div>
+        </div>
+    </div>
+    <script src="../JS/wine.js"></script>
+</body>
+
+</html>
