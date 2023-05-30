@@ -1,5 +1,11 @@
 <?php
 
+function error($msg){
+    $error = array("status"=>"error", "timestamp"=>time(), "data"=>$msg);
+    echo JSON_encode($error);
+    die();
+}
+
 $host = "wheatley.cs.up.ac.za";
 $username = "u20743956";
 $password = "Iwantinnow@34";
@@ -31,12 +37,12 @@ if($jsonData->apikey != "69"){
     error("invalid api key");
 }
 
+
+
 switch ($jsonData->type) {
     case "SELECT":
         selectQuery($jsonData, $DBConnection);
         break;
-      echo "Your favorite color is green!";
-      break;
     case "INSERT":
         insertQuery($jsonData, $DBConnection);
         break;
@@ -47,7 +53,8 @@ switch ($jsonData->type) {
         updateQuery($jsonData, $DBConnection);
         break;
     default:
-      echo "Your favorite color is neither red, blue, nor green!";
+    error("invalid type");
+        break;
   }
 
 
@@ -194,9 +201,5 @@ function selectQuery($jsonData, $DBConnection){
     }
 }
 
-function error($msg){
-    $error = array("status"=>"error", "timestamp"=>time(), "data"=>$msg);
-    return JSON_encode($error);
-    die();
-}
+
 ?>
