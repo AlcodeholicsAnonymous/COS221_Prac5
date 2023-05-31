@@ -23,6 +23,7 @@ a {
     color: white ;
     font-weight: bold;
     font-size: 3vh;
+    padding: 5px;
 }
 
 .Container {
@@ -83,25 +84,19 @@ a {
     height: 20%;
     background-color: transparent;
     border-color: transparent;
-    outline: 1px solid white;
+    outline: 1px solid #88181f ;
     border-radius: 10px;
     color: white ;
 }
 
-select
-{
+.Input {
     width: 85%;
     height: 30%;
     background-color: transparent;
     border-color: transparent;
-    outline: 1px solid white;
+    outline: 1px solid #88181f ;
     border-radius: 10px;
-    color: white;
-}
-
-option 
-{
-    color: black;
+    color: white ;
 }
 
 .WineContainer {
@@ -119,46 +114,19 @@ option
 .Wine {
     background-color: rgba(255, 115, 115, 0.15);
     /* outline: 2px solid #ff2130 ; */
-    width: 32%;
-    height: 32%;
+    width: 45%;
+    height: 40%;
     border-radius: 20px;
     backdrop-filter: blur(15px);
     display: flex;
     justify-content: space-evenly;
-    font-size: 1.7vh;
-    box-shadow: white 1px 1px 1px 0px;
 }
 
-h2{
-    font-size: 2vh;
-    color: white;
-    text-align: left;
-}
-
-.ButtonContainer 
-{
-    display: flex;
-    justify-content: space-evenly;
-}
-
-.Button 
-{
-    border-color: transparent;
-    outline: solid white;
-    background-color: transparent;
-    border-radius: 10px;
-    color: white ;
-    width: 35%;
-}
-
-.WineImage
-{
-    width: 25%;
+.WineImage {
+    /* width: 30%; */
     height: 100%;
     border-radius: 20px;
-    background-size: auto 100%;
-    background-repeat: no-repeat;
-    background-position: center;
+    /* filter: drop-shadow(0 0 0.75rem white); */
 }
 
 .WineInfo 
@@ -168,16 +136,10 @@ h2{
     color: white;
     width: 70%;
 }
-.WineInfoContainer 
-{
-    display: flex;
-    flex-direction: column;
-    justify-content: left;
-}
 
-table 
-{
-    text-align: left;
+.WineInfoContainer {
+    display: flex;
+    justify-content: space-around;
 }
 
 .Info {
@@ -200,3 +162,15 @@ table
     background: white ;
 }
 
+
+
+
+
+
+
+
+
+
+.active {
+    border: solid 2px #88181f;
+}
