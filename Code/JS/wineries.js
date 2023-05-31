@@ -1,90 +1,70 @@
-var ret = "*",
-    limit = 20,
-    order = "DESC",
-    fuzzy = true,
-    country = "",
-    region = "",
-    tasting = false,
-    cantact = "";
+
+var cardContainer = document.getElementById("windiv");
 
 
+function APIRequest() 
+{
+    let Request = 
+    {
+        "apikey": "69",
+        "query": "SELECT",
+        "type": "CustomQuery",
+        "Query": "SELECT * FROM Winery;"
+    };
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function () 
+    {
+        let ReturnData = JSON.parse(this.responseText)
+        console.log(ReturnData);
 
-function getWineries() {
-    //var spesWinery = "{}"
-    var reqWin = new XMLHttpRequest();
-    reqWin.addEventListener("readystatechange",function() {
-        if(this.readyState === 4 && this.status === 200) {
-            var wineries = JSON.parse(this.responseText);
-            console.log(wineries);
-            const wingal = document.getElementById("winerygallery");
-            wingal.innerHTML = "";
-            for (var i = 0; i < wineries.data.length; i++) {
-                const windiv = document.createElement("div");
-                    windiv.className = "winery";
-                    wingal.appendChild(windiv);
-                const info = document.createElement("p");
-                    info.innerHTML = "Country:  " +wineries.data[i].country+ "<br/>"+
-                                    "Region:  " +wineries.data[i].region+ "<br/>"+
-                                    "Address:  " +wineries.data[i].address+ "<br/>"+
-                                    "Postal Code:  " +wineries.data[i].postal+ "<br/>"+
-                                    "Wine Tasting:  " +wineries.data[i].tasting+ "<br/>"+
-                                    "Contact:  " +wineries.data[i].contact+ "<br/>";
-
-                windiv.appendChild(info)
-                const galdiv = document.createElement("div");
-                galdiv.className = "gallery";
-                    windiv.appendChild(galdiv);
-                const image = document.createElement("img"); 
-                    var reqImg = new XMLHttpRequest();
-                    reqImg.addEventListener("readystatechange", function() {
-                        if(this.readyState === 4 && this.status === 200) {
-                            var imgURL = this.responseText;
-                            image.src = imgURL;
-                            image.alt = "imgURL";     
-                            galdiv.appendChild(image); ;
-                        }
-                    });
-                    reqImg.open("GET", "https://wheatley.cs.up.ac.za/api/getimage?brand="+wineries.data[i].make+
-                                "&model="+wineries.data[i].model);
-                    reqImg.send();
-                const dcript = document.createElement("div");
-                    dcript.innerHTML = wineries.data[i].make +" "+ wineries.data[i].model;
-                    dcript.className = "desc";
-                    galdiv.appendChild(dcript);
-            }
+        if (ReturnData.status == "error" || ReturnData.data.length == 0) 
+        {
+            // const card = generateNoneFound()
+            // cardContainer.appendChild(card);
         }
-    });
-    reqCar.open("POST", "https://localhost:8081/");
-    reqCar.setRequestHeader("Content-Type", "applicaton/json");
-    reqCar.send(spesCar);
+        else 
+        {
+            let index = 0;
+            // while (ReturnData.data[index] && typeof ReturnData.data[index].Name !== 'undefined') 
+            // {
+                let card = GenerateWineCard
+                (
+                    ReturnData.data[0].Winery_ID, ReturnData.data[0].Name,
+                    ReturnData.data[0].Admin_ID, ReturnData.data[0].Location_ID,
+                    ReturnData.data[0].Image
+                );
+                cardContainer.appendChild(card);
+
+                // index++;
+            // }
+
+        }
+    }
+    xhttp.open("POST", "http://127.0.0.1:8080", true);
+    xhttp.send(JSON.stringify(Request));
+    console.log(JSON.stringify(Request));
 }
 
-function getCars() {
-    var spesCar  = "{\"studentnum\":\""+studnum+
-                "\",\"type\":\"GetAllCars\",\"limit\":"+limit+
-                ",\"apikey\":\""+apikey+
-                "\",\"search\":{\"make\":\""+make+
-                "\",\"model\":\""+model+
-                "\",\"transmission\":\""+trans+
-                "\",\"engine_type\":\""+engine+
-                "\",\"body_type\":\""+body+
-                "\",\"number_of_seats\":\""+seats+
-                "\",\"series\":\""+series+
-                "\",\"trim\":\""+trim+
-                "\",\"number_of_cylinders\":\""+numCyl+
-                "\"},\"fuzzy\": true,\"sort\":\""+sortIn+"\",\"order\":\""+order+"\",\"return\":\"*\"}";
+function GenerateWineCard(ID, Name, Admin, Location, Image) 
+{
+    console.log("Generating Winery Card");
+    console.log(ID);
+    console.log(Name);
+    console.log(Admin);
+    console.log(Location);
+    console.log(Image);
 
-    var reqCar = new XMLHttpRequest();
-    reqCar.addEventListener("readystatechange", function() {
-        if(this.readyState === 4 && this.status === 200) {
-            var cars = JSON.parse(this.responseText);
-            console.log(cars);
-            const carGall = document.getElementById("cargallery");
-            carGall.innerHTML = "";
-            
-        }
-    });
-    reqCar.open("POST", "https://localhost:8081/WineryAPI.php");
-    reqCar.setRequestHeader("Content-Type", "applicaton/json");
-    reqCar.send(spesCar);
+    const card = document.createElement("p");
+    card.style.color = "white";
+
+    card.innerHTML = `
+            ID: ${ID}           <br>
+            Name: ${Name}         <br>
+            Admin ID: ${Admin}      <br>
+            Location ID:${Location}  <br>
+            Image: ${Image}         <br>
+        `;
+
+    console.log(card);
+    return card;
 }

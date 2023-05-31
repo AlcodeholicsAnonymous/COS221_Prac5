@@ -88,14 +88,20 @@ a {
     color: white ;
 }
 
-.Input {
+select
+{
     width: 85%;
-    height: 20%;
+    height: 30%;
     background-color: transparent;
     border-color: transparent;
     outline: 1px solid white;
     border-radius: 10px;
     color: white;
+}
+
+option 
+{
+    color: black;
 }
 
 .WineContainer {
@@ -113,13 +119,20 @@ a {
 .Wine {
     background-color: rgba(255, 115, 115, 0.15);
     /* outline: 2px solid #ff2130 ; */
-    width: 30%;
-    height: 30%;
+    width: 32%;
+    height: 32%;
     border-radius: 20px;
     backdrop-filter: blur(15px);
     display: flex;
     justify-content: space-evenly;
     font-size: 1.7vh;
+    box-shadow: white 1px 1px 1px 0px;
+}
+
+h2{
+    font-size: 2vh;
+    color: white;
+    text-align: left;
 }
 
 .ButtonContainer 
@@ -138,12 +151,14 @@ a {
     width: 35%;
 }
 
-.WineImage 
+.WineImage
 {
-    /* width: 30%; */
+    width: 25%;
     height: 100%;
     border-radius: 20px;
-    /* filter: drop-shadow(0 0 0.75rem white); */
+    background-size: auto 100%;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .WineInfo 
