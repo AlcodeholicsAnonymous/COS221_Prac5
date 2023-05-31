@@ -13,6 +13,9 @@ $database = "u20743956_Wines";
 
 //expect json data
 header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
 
 $postData = file_get_contents('php://input');
 $jsonData = json_decode($postData);
@@ -187,12 +190,11 @@ function selectQuery($jsonData, $DBConnection){
 
     $DBQuery .= ";";
 
-    /*
     if ($jsonData->type == "CustomQuery" && $jsonData->Query)
     {
         $DBQuery = $jsonData->Query;
     }
-    console.log($DBQuery);*/
+    // console.log($DBQuery);
 
     // Putting Together the statement and executing it
     /*$stmt = mysqli_prepare($DBConnection, $DBQuery);
