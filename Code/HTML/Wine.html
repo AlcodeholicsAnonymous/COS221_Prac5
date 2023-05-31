@@ -7,29 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wines</title>
     <link rel="stylesheet" href="../CSS/Wine.css">
+    <link rel="stylesheet" href="../CSS/Navbar.css">
 </head>
 
-<body onload="ApplyFilters()">
+<body onload="ApplyFilters(), PopulateNav()">
     <div class="Container">
-        <div class="Navbar">
-            <div class="Logo">
-                <!-- <img src="/Components/Images/Logo.png" alt="Logo"> -->
-            </div>
-            <li class="NavSpacing">
-                <a href="#" class="a">
-                    Wines
-                </a>
-                <a href="../HTML/wineries.html" class="a">
-                    Wineries
-                </a>
-                <a href="#" class="a">
-                    Wine Routes
-                </a>
-                <a href="../HTML/login.html" class="a">
-                    Login
-                </a>
-            </li>
-        </div>
+        <div class="Navbar" id="Navbar"></div>
         <div class="InfoContainer">
             <div class="FilterContainer">
                 <div style="font-size: 4.5vh;">Filters</div>
@@ -40,6 +23,8 @@
                         <option value="Red">Red</option>
                         <option value="White">White</option>
                         <option value="Rose">Rose</option>
+                        <option value="Sparkling">Sparkling</option>
+                        <option value="Dessert">Dessert</option>
                     </select>
                 </div>
                 <div>
@@ -104,6 +89,7 @@
         </div>
     </div>
     <script src="../JS/wine.js"></script>
+    <script src="../JS/Navbar.js"></script>
 </body>
 
 </html>
