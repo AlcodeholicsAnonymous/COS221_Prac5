@@ -1,8 +1,14 @@
 <?php
 
+function error($msg){
+    $error = array("status"=>"error", "timestamp"=>time(), "data"=>$msg);
+    echo JSON_encode($error);
+    die();
+}
+
 $host = "wheatley.cs.up.ac.za";
 $username = "u20743956";
-$password = "Iwantinnow@34"; // Remember to include password
+$password = "Iwantinnow@34";
 $database = "u20743956_Wines";
 
 //expect json data
@@ -10,14 +16,11 @@ header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
-// $postData = file_get_contents('php://input');
-$postData = '{
-    "type": "SELECT",
-    "table": "GetWines",
-    "return": "*",
-    "limit": 5
-}';
+
+$postData = file_get_contents('php://input');
 $jsonData = json_decode($postData);
+
+
 
 try {
     $DBConnection = mysqli_connect($host, $username, $password, $database);
@@ -25,25 +28,46 @@ try {
     error("Server error");
 }
 
+
 //validation
-if(!isset($jsonData->type)){
+if(!isset($jsonData->query)){
     error("no query type");
 }
 
-switch ($jsonData->type) {
+if(!isset($jsonData->apikey)){
+    error("no api key");
+}
+
+if($jsonData->apikey != "69"){
+    error("invalid api key");
+}
+
+
+
+switch ($jsonData->query) {
     case "SELECT":
         selectQuery($jsonData, $DBConnection);
         break;
-      echo "Your favorite color is green!";
-      break;
     case "INSERT":
-        selectQuery($jsonData, $DBConnection);
+        insertQuery($jsonData, $DBConnection);
         break;
+    case "DELETE":
+        deleteQuery($jsonData, $DBConnection);
+        break;
+    case "UPDATE":
+        updateQuery($jsonData, $DBConnection);
+        break;
+    case "Custom" :
+        if ($jsonData->type == "CustomQuery" && $jsonData->Query)
+    {
+        $DBQuery = $jsonData->Query;
+    }
     default:
-      echo "Your favorite color is neither red, blue, nor green!";
+    error("invalid type");
+        break;
   }
 
-  
+
 function insertQuery($jsonData, $DBConnection){
 
 }
@@ -56,47 +80,68 @@ function updateQuery($jsonData, $DBConnection){
     
 }
 
+//this query returns the whole picture thing you showed in the discord meeting
+/*$query = "SELECT Wine.image, Wine.Name, Wine.Type, Winery.Name, Location.Country, Wine.Price, Wine.Year FROM Wine JOIN Winery
+ ON Wine.Winery_ID = Winery.Winery_ID JOIN Location ON Winery.Location_ID = Location.Location_ID;";
 
+//$query = "SELECT * FROM Wine;";
+$result = mysqli_query($DBConnection, $query);
+
+    $output = $result->fetch_all(MYSQLI_ASSOC);
+
+//step 5: build response
+$returnJson = array("status"=>"success", "timestamp"=>time(), "data"=>$output);
+echo JSON_encode($returnJson);*/
 function selectQuery($jsonData, $DBConnection){
-    $DBQuery = "SELECT ";
+    //$DBQuery = "SELECT ";
+    $DBQuery = "SELECT Wine.Image, Wine.Name, Wine.Type, Winery.Name, Location.Country, Wine.Price, Wine.Year FROM Wine JOIN Winery
+    ON Wine.Winery_ID = Winery.Winery_ID JOIN Location ON Winery.Location_ID = Location.Location_ID ";
+    
+    if(isset($jsonData->distinct) && ($jsonData->distinct == "true")){
+        $DBQuery .= "DISTINCT ";
+    }
+
 
     // Checking to see if there are any specific return columns
-    if (is_array($jsonData->return) && count($jsonData->return) > 0)
-    {
-        $returnColumns = implode(", ", $jsonData->return);
-        $DBQuery .= $returnColumns . " ";
-    }
-    else
-    {
-        $DBQuery .= "* ";
-    }
+    /*if (isset($jsonData->return)){
+        if (is_array($jsonData->return) && count($jsonData->return) > 0)
+        {
+            $returnColumns = implode(", ", $jsonData->return);
+            $DBQuery .= $returnColumns . " ";
+        }
+        else
+        {
+            $DBQuery .= "* ";
+        }
+    }*/
+    
 
 
     // Checking to see which table the data is coming from
-    if ($jsonData->table == "GetWines")
+    /*if ($jsonData->from == "GetWines")
     {
         $DBQuery .= "FROM Wine ";
     }
-    else if ($jsonData->type == "GetWineries")
+    else if ($jsonData->from == "GetWineries")
     {
         $DBQuery .= "FROM Winery ";
     }
-    else if ($jsonData->type == "GetLocations")
+    else if ($jsonData->from == "GetLocations")
     {
         $DBQuery .= "FROM Location ";
     }
-    else if ($jsonData->type == "GetUsers")
+    else if ($jsonData->from == "GetUsers")
     {
         $DBQuery .= "FROM User ";
     }
-    else if ($jsonData->type == "GetRatings")
+    else if ($jsonData->from == "GetRatings")
     {
         $DBQuery .= "FROM Rating ";
-    }
+    }*/
 
 
     // Checking to see if there are any seacrh conditions
-    if ($jsonData->search && is_object($jsonData->search)) 
+    /*if ($jsonData->search && is_object($jsonData->search)) 
     {
         $DBQuery .= " WHERE ";
         $searchArray = (array) $jsonData->search;
@@ -123,7 +168,13 @@ function selectQuery($jsonData, $DBConnection){
             }
             $i++;
         }
+    }*/
+
+    if (isset($jsonData->Type))
+    {
+        $DBQuery .= " WHERE Wine.Type = '" . $jsonData->Type . "'";
     }
+
 
 
     if($jsonData->sort)
@@ -144,14 +195,15 @@ function selectQuery($jsonData, $DBConnection){
 
     $DBQuery .= ";";
 
+    
     if ($jsonData->type == "CustomQuery" && $jsonData->Query)
     {
         $DBQuery = $jsonData->Query;
     }
-    // console.log($DBQuery);
+    //console.log($DBQuery);
 
     // Putting Together the statement and executing it
-    $stmt = mysqli_prepare($DBConnection, $DBQuery);
+    /*$stmt = mysqli_prepare($DBConnection, $DBQuery);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
 
@@ -184,11 +236,18 @@ function selectQuery($jsonData, $DBConnection){
         $json = json_encode($response, JSON_PRETTY_PRINT);
         header('Content-Type: application/json');
         echo $json;
-    }
+    }*/
+    
+
+    $result = mysqli_query($DBConnection, $DBQuery);
+
+    $output = $result->fetch_all(MYSQLI_ASSOC);
+
+    //step 5: build response
+    $returnJson = array("status"=>"success", "timestamp"=>time(), "data"=>$output);
+    echo JSON_encode($returnJson);
+
 }
 
-function error($msg){
-    $error = array("status"=>"error", "timestamp"=>time(), "data"=>$msg);
-    return JSON_encode($error);
-    die();
-}
+
+?>

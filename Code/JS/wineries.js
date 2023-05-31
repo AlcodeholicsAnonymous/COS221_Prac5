@@ -12,17 +12,20 @@ var ret = "*",
 
 function getWineries() {
     var spesWinery = {
-        query : "SELECT",
-        from : "GetWineries",
+        query : "Custom",
+        apikey : "69",
+        type : "CustomQuery",
+        Query : "SELECT * FROM Winery"
+        /*from : "GetWineries",
         limit : 10,
         name : reqwinery,
         country : reqcountry,
         region : reqregion,
-        tasting : reqtasting
+        tasting : reqtasting*/
     }
 
     var reqWin = new XMLHttpRequest();
-    reqWin.open("POST", "https://127.0.0.1:8080/");
+    reqWin.open("POST", "https://localhost:8080/");
     reqWin.setRequestHeader("Content-Type", "applicaton/json");
     reqWin.send(JSON.stringify(spesWinery));
 
