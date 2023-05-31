@@ -16,6 +16,12 @@
 (Optional)"yearTo":"",(if either of Wine year is present, the other becomes compulsory),
 (optional)"custom":""(for testing purposes)
 
+//for wineries page
+(optional)"name":"",
+(optional)"country":"",
+(optional)"region":"",
+(optional)"tasting":""
+
 //add more if needed
 }
 
