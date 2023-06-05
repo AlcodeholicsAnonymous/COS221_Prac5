@@ -40,11 +40,11 @@ function passwordMatch($password, $confirm_password)
 }
 function emailExists($conn, $email)
 {
-    $sql = "SELECT * FROM users WHERE email = ?;";
+    $sql = "SELECT * FROM User WHERE Email = ?;";
     $stmt = mysqli_stmt_init($conn);
     if (!mysqli_stmt_prepare($stmt, $sql))
     {
-        header("Location: ../HTML/Register.html?error=stmtfailed");
+        header("Location: Register.php?error=stmtfailed");
         exit();
     }
     mysqli_stmt_bind_param($stmt, "s", $email);
@@ -76,25 +76,43 @@ function passwordStrength($password)
 }
 function creatUser($conn, $name, $surname, $email, $password)
 {
-    $sql = "INSERT INTO users (API_Key, name, surname, email, password) VALUES (?, ?, ?, ?, ?);";
+    $sql = "INSERT INTO User (First_Name, Last_Name, Is_Expert, Email, Password) VALUES (?, ?, ?, ?, ?)";
     $stmt = mysqli_stmt_init($conn);
-    if (!mysqli_stmt_prepare($stmt, $sql))
+
+    try 
     {
-        header("Location: ../HTML/Register.html?error=stmtfailed");
+        mysqli_stmt_prepare($stmt, $sql);
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $isExpert = 0; // Assuming it's a non-expert by default
+        mysqli_stmt_bind_param($stmt, "ssiss", $name, $surname, $isExpert, $email, $hashedPassword);
+
+        mysqli_stmt_execute($stmt);
+
+        if (mysqli_stmt_affected_rows($stmt) > 0) 
+        {
+            // Success
+            mysqli_stmt_close($stmt);
+            mysqli_close($conn);
+            header("Location: login.php");
+            exit();
+        } 
+        else 
+        {
+            // No rows affected, handle error
+            mysqli_stmt_close($stmt);
+            mysqli_close($conn);
+            header("Location: Register.php?error=stmtfailed");
+            exit();
+        }
+    } 
+    catch (Exception $e) 
+    {
+        // Exception occurred, handle error
+        mysqli_stmt_close($stmt);
+        mysqli_close($conn);
+        header("Location: Register.php?error=stmtfailed");
         exit();
     }
-    // Default hashing algorithm is bcrypt and salt is generated automatically
-    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-    //generate api key
-    $api_key = bin2hex(openssl_random_pseudo_bytes(5)) . uniqid() . bin2hex(openssl_random_pseudo_bytes(5));
-    mysqli_stmt_bind_param($stmt, "sssss", $api_key, $name, $surname, $email, $hashedPassword);
-    mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
-    echo "<script>
-    alert('Your API key is: " . $api_key . "');
-    window.location.href='../HTML/login.html?error=none';
-    </script>";
-    exit();
 }
 function emptyInputLogin($email, $password)
 {
@@ -114,22 +132,23 @@ function loginUser($conn, $email, $password)
     $emailExists = emailExists($conn, $email);
     if ($emailExists === false)
     {
-        header("Location: ../HTML/login.html?error=wronglogin");
+        header("Location: login.php?error=wronglogin");
         exit();
     }
-    $passwordHashed = $emailExists["password"];
+    $passwordHashed = $emailExists["Password"];
     $checkPassword = password_verify($password, $passwordHashed);
     if ($checkPassword === false)
     {
-        header("Location: ../HTML/login.html?error=wronglogin");
+        header("Location: login.php?error=wronglogin");
         exit();
     }
     else if ($checkPassword === true)
     {
         session_start();
-        $_SESSION["name"] = $emailExists["name"];
-        $_SESSION["surname"] = $emailExists["surname"];
-        $_SESSION["useremail"] = $emailExists["email"];
-        setcookie('API_Key', $emailExists["API_Key"], time() + (86400 * 30), '/', '', false, false);
+        $_SESSION["name"] = $emailExists["First_Name"];
+        $_SESSION["surname"] = $emailExists["Last_Name"];
+        $_SESSION["email"] = $emailExists["Email"];
+        $_SESSION["isExpert"] = $emailExists["Is_Expert"];
+        header("Location: ../HTML/Wine.html");
     }
 }

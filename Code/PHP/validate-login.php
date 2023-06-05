@@ -7,13 +7,13 @@ if(isset($_POST["submit"]))
     $password = $_POST["password"];
     if(emptyInputLogin($email, $password) !== false)
     {
-        header("Location: ../HTML/login.html?error=emptyinput");
+        header("Location: login.php?error=emptyinput");
         exit();
     }
     loginUser($conn, $email, $password);
 }
 else
 {
-    header("Location: ../HTML/login.html");
+    header("Location: login.php");
     exit();
 }
