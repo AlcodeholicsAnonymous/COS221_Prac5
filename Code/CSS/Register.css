@@ -17,11 +17,10 @@ body {
     background-position: center;
     background-size: cover;
 }
-
 .form-box {
     position: relative;
     width: 27.5%;
-    /* height: 20%; */
+    height: 100%;
     background: transparent;
     border: 2px solid white;
     border-radius: 20px;
@@ -41,7 +40,7 @@ h2 {
 .inputbox {
     position: relative;
     margin: 30px 0;
-    width: 310px;
+    width: 100%;
     border-bottom: 2px solid white;
 }
 
@@ -102,7 +101,6 @@ button {
 .register a {
     color: white;
 }
-
 
 .hidden {
     opacity: 0;

@@ -1,9 +1,8 @@
 <?php
-//Timothy_Whitaker_u22744968
 $serverName = "wheatley.cs.up.ac.za";
-$dbusername = "";
-$dbpassword = "";
-$dbName = "";
+$dbusername = "u20743956";
+$dbpassword = "Iwantinnow@34";
+$dbName = "u20743956_Wines";
 
 $conn = mysqli_connect($serverName, $dbusername, $dbpassword, $dbName);
 
