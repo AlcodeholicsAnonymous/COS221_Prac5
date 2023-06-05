@@ -1,6 +1,7 @@
 <?php
 
-function error($msg){
+function error($msg)
+{
     $error = array("status"=>"error", "timestamp"=>time(), "data"=>$msg);
     echo JSON_encode($error);
     die();
@@ -30,15 +31,18 @@ try {
 
 
 //validation
-if(!isset($jsonData->query)){
+if(!isset($jsonData->query))
+{
     error("no query type");
 }
 
-if(!isset($jsonData->apikey)){
+if(!isset($jsonData->apikey))
+{
     error("no api key");
 }
 
-if($jsonData->apikey != "69"){
+if($jsonData->apikey != "69")
+{
     error("invalid api key");
 }
 
@@ -63,15 +67,30 @@ switch ($jsonData->query) {
   }
 
 
-function insertQuery($jsonData, $DBConnection){
+function insertQuery($jsonData, $DBConnection)
+{
+    $DBQuery = "INSERT INTO ";
+    $DBQuery .= $jsonData->table;
+    $DBQuery .= " VALUES (";
+    $values = array_values((array)$jsonData->values);
+    $DBQuery .= implode(", ", $values) . ");";
 
+
+
+    // $result = mysqli_query($DBConnection, $DBQuery);
+
+    //step 5: build response
+    $returnJson = array("status"=>"Successful Insert", "timestamp"=>time(), "query"=>$DBQuery);
+    echo JSON_encode($returnJson);
 }
 
-function deleteQuery($jsonData, $DBConnection){
+function deleteQuery($jsonData, $DBConnection)
+{
     
 }
 
-function updateQuery($jsonData, $DBConnection){
+function updateQuery($jsonData, $DBConnection)
+{
     
 }
 
@@ -238,7 +257,7 @@ function selectQuery($jsonData, $DBConnection){
     $output = $result->fetch_all(MYSQLI_ASSOC);
 
     //step 5: build response
-    $returnJson = array("status"=>"success", "timestamp"=>time(), "data"=>$output);
+    $returnJson = array("status"=>"success", "timestamp"=>time(), "data"=>$output, "query"=>$DBQuery);
     echo JSON_encode($returnJson);
 
 }
