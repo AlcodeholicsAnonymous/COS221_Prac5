@@ -48,7 +48,8 @@ if($jsonData->apikey != "69")
 
 
 
-switch ($jsonData->query) {
+switch ($jsonData->query) 
+{
     case "SELECT":
         selectQuery($jsonData, $DBConnection);
         break;
@@ -75,12 +76,10 @@ function insertQuery($jsonData, $DBConnection)
     $values = array_values((array)$jsonData->values);
     $DBQuery .= implode(", ", $values) . ");";
 
-
-
-    // $result = mysqli_query($DBConnection, $DBQuery);
+    $result = mysqli_query($DBConnection, $DBQuery);
 
     //step 5: build response
-    $returnJson = array("status"=>"Successful Insert", "timestamp"=>time(), "query"=>$DBQuery);
+    $returnJson = array("status"=>"Successful Insert", "timestamp"=>time());
     echo JSON_encode($returnJson);
 }
 
@@ -91,8 +90,21 @@ function deleteQuery($jsonData, $DBConnection)
 
 function updateQuery($jsonData, $DBConnection)
 {
-    
+    $DBQuery = "UPDATE ";
+    $DBQuery .= $jsonData->table;
+    $DBQuery .= " SET Rating = " . $jsonData->values->Rating;
+    $DBQuery .= " WHERE Wine_ID = " . $jsonData->values->Wine_ID . " AND User_ID = " . $jsonData->values->User_ID . ";";
+
+    $result = mysqli_query($DBConnection, $DBQuery);
+
+    // Step 5: Build response
+    $returnJson = array(
+        "status" => "Successful Update",
+        "timestamp" => time()
+    );
+    echo json_encode($returnJson);
 }
+
 
 //this query returns the whole picture thing you showed in the discord meeting
 /*$query = "SELECT Wine.image, Wine.Name, Wine.Type, Winery.Name, Location.Country, Wine.Price, Wine.Year FROM Wine JOIN Winery

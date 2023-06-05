@@ -6,7 +6,7 @@ function PopulateNav()
     console.log("Generating Navbar");
 
     const LogoImg = document.createElement("img");
-    LogoImg.src = "../Img/Logo.jpg";
+    LogoImg.src = "../Img/Logo.png";
     Navbar.appendChild(LogoImg);
     
     const NavLinks = document.createElement("li");
