@@ -89,7 +89,7 @@ function AddWine()
     let postData = 
     {   "passwordHash" : Password,
         "type": "addWine",
-        "wine": wine
+        "parameters": wine
     };
     APIRequest(postData);
     }

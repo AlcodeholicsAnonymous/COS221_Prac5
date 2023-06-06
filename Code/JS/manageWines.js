@@ -105,13 +105,7 @@ function Update()
         APIRequest(postData);
        
     }
-    
-    
-    
-
-    //console.log(Request);
-      
-   
+       
 }
 
 
