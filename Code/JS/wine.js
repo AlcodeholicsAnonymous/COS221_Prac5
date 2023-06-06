@@ -174,7 +174,7 @@ function APIRequest(Request)
 
 
 
-function GenerateWineCard(image, name, type, winery, country, price, year, index, WineID, UserID, loggedIn, AverageRating) {
+function GenerateWineCard(image, name, type, winery, country, price, year, index, WineID, UserID, loggedIn, ExpertRating) {
 	const card = document.createElement("div");
 	card.classList.add("Wine");
 
@@ -237,7 +237,7 @@ function GenerateWineCard(image, name, type, winery, country, price, year, index
                     ` : ''}
                 </td>
                 <td>
-                    <p>Average Rating: ${AverageRating}</p>
+                    <p>Expert Rating: ${ExpertRating}</p>
                 </td>
               </tr>
           </table>
@@ -307,9 +307,19 @@ function ApplyFilters()
 		+ 'Location.Country, '
 		+ 'Wine.Price, '
 		+ 'Wine.Year, '
-		+ 'IFNULL(AVG(Rating.Rating), NULL) AS Average_Rating '
-		+ 'FROM '
-		+ 'Wine '
+
+		+ '( '
+		+ 'SELECT AVG(Rating.Rating) '
+		+ 'FROM Rating '
+		+ 'JOIN User ON Rating.User_ID = User.User_ID '
+		+ 'WHERE '
+		+ 'Rating.Wine_ID = Wine.Wine_ID '
+		+ 'AND User.Is_Expert = 1 '
+		+ ') '
+		+ 'AS Average_Rating '
+
+		+ 'FROM Wine '
+
 		+ 'JOIN Winery ON Wine.Winery_ID = Winery.Winery_ID '
 		+ 'JOIN Location ON Winery.Location_ID = Location.Location_ID '
 		+ 'LEFT JOIN Rating ON Wine.Wine_ID = Rating.Wine_ID ';
