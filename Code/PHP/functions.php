@@ -149,6 +149,23 @@ function loginUser($conn, $email, $password)
         $_SESSION["surname"] = $emailExists["Last_Name"];
         $_SESSION["email"] = $emailExists["Email"];
         $_SESSION["isExpert"] = $emailExists["Is_Expert"];
+        setcookie("name", $emailExists["First_Name"], time() + (86400 * 30), "/"); // 86400 = 1 day
+        setcookie("surname", $emailExists["Last_Name"], time() + (86400 * 30), "/"); // 86400 = 1 day
+        setcookie("LoggedIn", true, time() + (86400 * 30), "/"); // 86400 = 1 day
+        setcookie("isExpert", $emailExists["Is_Expert"], time() + (86400 * 30), "/"); // 86400 = 1 day
+        setcookie("UserID", $emailExists["User_ID"], time() + (86400 * 30), "/"); // 86400 = 1 day
         header("Location: ../HTML/Wine.html");
     }
+}
+
+function LogoutUser()
+{
+    session_start();
+    session_unset();
+    session_destroy();
+    setcookie("name", "", time() - 3600, "/");
+    setcookie("surname", "", time() - 3600, "/");
+    setcookie("LoggedIn", false, time() - 3600, "/");
+    header("Location: ../HTML/Wine.html");
+    exit();
 }

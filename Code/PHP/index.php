@@ -63,16 +63,41 @@ switch ($jsonData->query) {
   }
 
 
-function insertQuery($jsonData, $DBConnection){
+function insertQuery($jsonData, $DBConnection)
+{
+    $DBQuery = "INSERT INTO ";
+    $DBQuery .= $jsonData->table;
+    $DBQuery .= " VALUES (";
+    $values = array_values((array)$jsonData->values);
+    $DBQuery .= implode(", ", $values) . ");";
 
+    $result = mysqli_query($DBConnection, $DBQuery);
+
+    //step 5: build response
+    $returnJson = array("status"=>"Successful Insert", "timestamp"=>time());
+    echo JSON_encode($returnJson);
 }
 
-function deleteQuery($jsonData, $DBConnection){
+function deleteQuery($jsonData, $DBConnection)
+{
     
 }
 
-function updateQuery($jsonData, $DBConnection){
-    
+function updateQuery($jsonData, $DBConnection)
+{
+    $DBQuery = "UPDATE ";
+    $DBQuery .= $jsonData->table;
+    $DBQuery .= " SET Rating = " . $jsonData->values->Rating;
+    $DBQuery .= " WHERE Wine_ID = " . $jsonData->values->Wine_ID . " AND User_ID = " . $jsonData->values->User_ID . ";";
+
+    $result = mysqli_query($DBConnection, $DBQuery);
+
+    // Step 5: Build response
+    $returnJson = array(
+        "status" => "Successful Update",
+        "timestamp" => time()
+    );
+    echo json_encode($returnJson);
 }
 
 //this query returns the whole picture thing you showed in the discord meeting
