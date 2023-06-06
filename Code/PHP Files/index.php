@@ -118,7 +118,14 @@ function selectQuery($jsonData, $DBConnection){
 }
 
 function insertQuery($jsonData, $DBConnection){
-
+    if ($jsonData->type == "CustomQuery" && $jsonData->Query)
+    {
+        $DBQuery = $jsonData->Query;
+    }
+    $result = mysqli_query($DBConnection, $DBQuery);
+    $output = $result->fetch_all(MYSQLI_ASSOC);
+    $returnJson = array("status"=>"success", "timestamp"=>time(), "data"=>$output);
+    echo JSON_encode($returnJson);
 }
 
 function deleteQuery($jsonData, $DBConnection){
