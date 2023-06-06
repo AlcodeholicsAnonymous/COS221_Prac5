@@ -1,0 +1,233 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+:root {
+    --backgroundDark: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(../Img/Winery\ Background2.webp);
+}
+html,
+body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'poppins', sans-serif;
+    background-image: var(--backgroundDark);
+    background-position: center;
+    background-size: cover;
+}
+
+.Container 
+{
+    width: 100%;
+    height: 100%;
+}
+
+.InfoContainer 
+{
+    height: 87.5%;
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    padding-top: 0.75%;
+}
+
+.FilterContainer {
+    background-color: rgba(255, 115, 115, 0.15);
+    /* outline: 2px solid #ff2130 ; */
+    box-shadow: white 3px 3px 3px 0px;
+    backdrop-filter: blur(15px);
+    width: 20%;
+    height: 95%;
+    border-radius: 20px;
+    text-align: center;
+    font-size: 3vh;
+    color: white ;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    margin: 0 15px;
+}
+
+.AgeInput {
+    width: 35%;
+    height: 20%;
+    background-color: transparent;
+    border-color: transparent;
+    outline: 1px solid white;
+    border-radius: 10px;
+    color: white ;
+}
+
+select
+{
+    width: 85%;
+    height: 30%;
+    background-color: transparent;
+    border-color: transparent;
+    outline: 1px solid white;
+    border-radius: 10px;
+    color: white;
+}
+
+option 
+{
+    color: black;
+}
+
+.WineryContainer {
+    padding-top: 0.2%;
+    padding-bottom: 0.1%;
+    width: 78.5%;
+    height: 95%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    overflow-y: scroll;
+    gap: 10px;
+}
+
+.Winery 
+{
+    background-color: rgba(255, 115, 115, 0.15);
+    width: 32%;
+    height: 36%;
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    display: flex;
+    flex-direction: column-reverse;
+    font-size: 2.5vh;
+    box-shadow: white 1px 1px 1px 0px;
+    transition: transform 0.3s ease;
+}
+
+.Winery:hover {
+    transform: scale(1.035); /* Increase the size by 10% */
+}
+
+h2{
+    height: 20%;
+    width: 100%;
+    font-size: 3vh;
+    color: white;
+    text-align: left;
+}
+
+
+.ButtonContainer 
+{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.Button 
+{
+    border-color: transparent;
+    outline: solid white;
+    background-color: transparent;
+    border-radius: 10px;
+    color: white ;
+    width: 35%;
+}
+
+.WineryImage
+{
+    width: 100%;
+    height: 50%;
+    border-radius: 20px;
+    background-size: auto 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-right: 2%;
+}
+
+.WineryInfo {
+    /* outline: solid pink; */
+    text-align: left;
+    color: white;
+    width: 80%;
+  }
+  
+.WineryInfoContainer 
+{
+    /* outline: solid green; */
+    width: 100%;
+    height: 50%;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: left;
+    font-size: 1.5vh;
+}
+
+.Rating
+{
+    /* outline: solid gold; */
+    height: 5vh;
+    width: 100%;
+    display: flex;
+    /* justify-content: space-evenly; */
+    /* margin-left: -5%; */
+}
+
+.circular-checkbox
+{
+    /* outline: solid pink; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.circular-checkbox input[type="checkbox"] 
+{
+    display: none;
+}
+
+.circular-checkbox .checkmark2 
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 3vh;
+    height: 3.5vh;
+    position: relative;
+    overflow: hidden;
+    font-size: 3vh;
+    line-height: 1.4;
+    text-align: center;
+    color: black;
+    transition: color 0.3s;
+    /* outline: solid gold; */
+}
+
+.circular-checkbox .checkmark2:before 
+{
+    content: "★";
+    display: block;
+}
+
+.circular-checkbox input[type="checkbox"]:checked+.checkmark2 
+{
+    color: gold;
+}
+
+table 
+{
+    text-align: left;
+}
+
+.Info {
+    text-align: left;
+}
+
+.WineryContainer::-webkit-scrollbar 
+{
+    width: 0.5rem;
+}
+
+.WineryContainer::-webkit-scrollbar-track 
+{
+    background: transparent;
+}
+
+.WineryContainer::-webkit-scrollbar-thumb 
+{
+    border-radius: 10px;
+    background: white ;
+}
