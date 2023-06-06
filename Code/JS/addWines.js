@@ -9,50 +9,50 @@ var WinePicture = document.getElementById("WineImage");
 
 
 
-function backgroundGet(){
+// function backgroundGet(){
 
     
-    if(getCookie("userID") !== 'undefiend'){
-    let user = getCookie("userID");
-    let Request = "SELECT Winery_ID,Image FROM Winery WHERE Admin_ID = '"+user+"'";  
+//     if(getCookie("userID") !== 'undefiend'){
+//     let user = getCookie("userID");
+//     let Request = "SELECT Winery_ID,Image FROM Winery WHERE Admin_ID = '"+user+"'";  
 
-    let postData = 
-    {
-        "query": "SELECT",
-        "type": "CustomQuery",
-        "Query": Request
-    };
+//     let postData = 
+//     {
+//         "query": "SELECT",
+//         "type": "CustomQuery",
+//         "Query": Request
+//     };
 
 
-    const xhttp = new XMLHttpRequest();
-    xhttp.onload = function (){
+//     const xhttp = new XMLHttpRequest();
+//     xhttp.onload = function (){
 
-        let ReturnData = JSON.parse(this.responseText)
-        console.log(ReturnData);
-        if (ReturnData.status == "error" || ReturnData.data.length == 0) 
-        {
-            const card = generateNoneFound()
+//         let ReturnData = JSON.parse(this.responseText)
+//         console.log(ReturnData);
+//         if (ReturnData.status == "error" || ReturnData.data.length == 0) 
+//         {
+//             const card = generateNoneFound()
           
-        }
-        else 
-        {
-            let index = 0;
-            while (ReturnData.data[index] && typeof ReturnData.data[index].Name !== 'undefined') 
-            {
-                WineWinery.value = ReturnData.data[index].Winery_ID;
-                document.getElementById("infoCon").style.backgroundImage = "url('"+ReturnData.data[index].image+"')";
-                index++;
-            }
+//         }
+//         else 
+//         {
+//             let index = 0;
+//             while (ReturnData.data[index] && typeof ReturnData.data[index].Name !== 'undefined') 
+//             {
+//                 WineWinery.value = ReturnData.data[index].Winery_ID;
+//                 document.getElementById("infoCon").style.backgroundImage = "url('"+ReturnData.data[index].image+"')";
+//                 index++;
+//             }
 
-        }
+//         }
 
-    } 
+//     } 
 
-    xhttp.open("POST", "http://127.0.0.1:8080", true);
-    xhttp.send(JSON.stringify(postData));
-    console.log(JSON.stringify(postData));
-}
-}
+//     xhttp.open("POST", "http://127.0.0.1:8080", true);
+//     xhttp.send(JSON.stringify(postData));
+//     console.log(JSON.stringify(postData));
+// }
+// }
 
 
 
@@ -113,16 +113,17 @@ function AddWine()
 
     }else
     {
-        let Request = "INSERT INTO Wine (Winery_ID, Name, Year,Type,Image,Price,Available,Category) VALUES ("
-        +"'"+WineWinery.value+"',"
-        +"'" +WineName.value+"',"
-        +"'" +WineYearFrom.value+"',"
-        +"'" +WineType.value+"',"
-        +"'" +WinePicture.value+"',"
-        +"'" +WinePriceFrom.value+"',"
-        +"'" +1+"',"
-        +"'" +WineCategory.value+"')"
-        ;
+        let wine = 
+    {
+      
+        "Name" : WineName.value,
+        "Year" : WineYearFrom.value,
+        "Type" :WineType.value,
+        "Image" : WinePicture.value,
+        "Price" : WinePriceFrom.value,
+        "Available" :"1",
+        "Category" : WineCategory.value
+        
     }
     
     
@@ -133,7 +134,8 @@ function AddWine()
     {
         "query": "INSERT",
         "type": "addWine",
-        "Query": Request
+        "wine": wine
     };
     APIRequest(postData);
+    }
 }
