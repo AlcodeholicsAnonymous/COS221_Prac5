@@ -20,7 +20,6 @@ header('Access-Control-Allow-Headers: Content-Type');
 
 $postData = file_get_contents('php://input');
 $jsonData = json_decode($postData);
-
 try {
     $DBConnection = mysqli_connect($host, $username, $password, $database);
 } catch (Exception $th) {
@@ -51,18 +50,16 @@ function auth($jsonData, $DBConnection)
 function getManagedWinery($jsonData, $DBConnection)
 {
     $userID = auth($jsonData, $DBConnection);
-    $statement = mysqli_prepare($DBConnection, "SELECT * FROM Winery WHERE Manager_ID = ?");
+    $statement = mysqli_prepare($DBConnection, "SELECT Winery_ID FROM Winery WHERE Admin_ID = ?");
     checkStmt($statement, $DBConnection);
     mysqli_stmt_bind_param($statement, "i", $userID);
     checkExecute($statement, $DBConnection);
     $result = mysqli_stmt_get_result($statement);
     $output = mysqli_fetch_all($result, MYSQLI_ASSOC);
-
     if (count($output) == 0) {
         return false;
     }
-
-    return $output[0];
+    return $output[0]["Winery_ID"];
 }
 
 switch ($jsonData->type) {
@@ -342,9 +339,13 @@ function getAllWineries($jsonData, $DBConnection)
 
 function addWine($jsonData, $DBConnection)
 {
-    if (auth($jsonData, $DBConnection)) {
-        $DBQuery = "INSERT INTO Wine (";
-        $types = "";
+    if (auth($jsonData, $DBConnection) != false)
+    {
+        $DBQuery = "INSERT INTO Wine (Winery_ID, ";
+        $types = "i";
+        $Winery_ID = getManagedWinery($jsonData, $DBConnection);
+        echo $Winery_ID;
+        $params[] = $Winery_ID;
         foreach ($jsonData->parameters as $key => $value) 
         {
             $sanitizedKey = mysqli_real_escape_string($DBConnection, $key); // Sanitize the column name
@@ -352,37 +353,52 @@ function addWine($jsonData, $DBConnection)
             $params[] = $value;
             typeof($value) == "string" ? $types .= "s" : $types .= "i";
         }
-        ") VALUES (?,?,?,?,?,?)";
+        $DBQuery = substr($DBQuery, 0, -2);
+        $DBQuery .= ") VALUES (?,?,?,?,?,?,?,?)";
         $statement = mysqli_prepare($DBConnection, $DBQuery);
         checkStmt($statement, $DBConnection);
         mysqli_stmt_bind_param($statement, $types, ...$params);
         checkExecute($statement, $DBConnection);
-        $result = mysqli_stmt_get_result($statement);
-        $output = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
-        $returnJson = array("status" => "success", "timestamp" => time(), "data" => $output);
+        $returnJson = array("status" => "success", "timestamp" => time());
         echo json_encode($returnJson);
+    }
+    else
+    {
+        error("Not a Manager");
+    }
+}
+function typeOf($value)
+{
+    if (is_numeric($value)) {
+        return "i";
+    } else {
+        return "string";
     }
 }
 function deleteWine($jsonData, $DBConnection)
 {
-    if (auth($jsonData, $DBConnection)) 
+    if (auth($jsonData, $DBConnection) != false) 
     {
         if (!isset($jsonData->wineName) || empty($jsonData->wineName || !isset($jsonData->wineYear) || empty($jsonData->wineYear) || !isset($jsonData->wineType) || empty($jsonData->wineType))) {
             error("Missing Details");
         }
         $Winery = getManagedWinery($jsonData, $DBConnection);
-        $DBQuery = "DELETE FROM Wine WHERE Wine_Name = ? AND Wine_Year = ? AND Wine_Type = ? AND Winery_ID = ?";
+        $DBQuery = "DELETE FROM Wine WHERE Winery_ID = ? AND Name = ? AND Year = ? AND Type = ?";
         $statement = mysqli_prepare($DBConnection, $DBQuery);
         checkStmt($statement, $DBConnection);
-        $types = "sisi";
-        $params = array($jsonData->wineName, $jsonData->wineYear, $jsonData->wineType, getManagedWinery($jsonData, $DBConnection)->Winery_ID);
+        $types = "isis";
+        $Winery_ID = getManagedWinery($jsonData, $DBConnection);
+        $params = array($Winery_ID ,$jsonData->wineName, $jsonData->wineYear, $jsonData->wineType);
         mysqli_stmt_bind_param($statement, $types, ...$params);
         checkExecute($statement, $DBConnection);
         $result = mysqli_stmt_get_result($statement);
-        $output = mysqli_fetch_all($result, MYSQLI_ASSOC);
-        $returnJson = array("status" => "success", "timestamp" => time(), "data" => $output);
+        $returnJson = array("status" => "success", "timestamp" => time());
         echo json_encode($returnJson);
+    }
+    else
+    {
+        error("Not a Manager");
     }
 }
 function updateWine($jsonData, $DBConnection)
@@ -402,14 +418,14 @@ function updateWine($jsonData, $DBConnection)
             $params[] = $value;
         }
         $DBQuery = substr($DBQuery, 0, -2);
-        $DBQuery .= " WHERE Wine_Name = ? AND Wine_Year = ? AND Wine_Type = ? AND Winery_ID = ?";
+        $DBQuery .= " WHERE Winery_ID = ? AND Name = ? AND Year = ? AND Type = ?";
+        $params[] = getManagedWinery($jsonData, $DBConnection);
         $params[] = $jsonData->wineName;
         $params[] = $jsonData->wineYear;
         $params[] = $jsonData->wineType;
-        $params[] = getManagedWinery($jsonData, $DBConnection)->Winery_ID;
         $statement = mysqli_prepare($DBConnection, $DBQuery);
         checkStmt($statement, $DBConnection);
-        $types .= "sisi";
+        $types .= "isis";
         mysqli_stmt_bind_param($statement, $types, ...$params);
         checkExecute($statement, $DBConnection);
         $result = mysqli_stmt_get_result($statement);
