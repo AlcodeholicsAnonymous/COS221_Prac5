@@ -81,100 +81,8 @@ function APIRequest(Request)
     xhttp.send(JSON.stringify(postData));
 }
 
-// function APIRequest(Request) 
-// {
-    
-//     console.log("Users name: " + Name);
-//     console.log("Users surname: " + Surname);
-//     console.log("Users ID: " + UserID);
-//     console.log("Users LoggedIn: " + isLoggedIn);
-// 	let postData =
-// 	{
-// 		apikey: "69",
-// 		query: "SELECT",
-// 		type: "CustomQuery",
-// 		Query: "SELECT * FROM Rating WHERE User_ID = " + UserID + ";"
-// 	};
-
-// 	fetch("http://127.0.0.1:8080",
-// 	{
-// 		method: "POST",
-// 		headers:
-// 		{
-// 			"Content-Type": "application/json"
-// 		},
-// 		body: JSON.stringify(postData)
-// 	})
-// 	.then(response => response.json())
-// 	.then(ReturnDataRatings => {
-// 		fetch("http://127.0.0.1:8080",
-// 			{
-// 				method: "POST",
-// 				headers:
-// 				{
-// 					"Content-Type": "application/json"
-// 				},
-// 				body: JSON.stringify(Request)
-// 			})
-// 			.then(response => response.json())
-// 			.then(ReturnData => {
-// 				if (ReturnData.status == "error" || ReturnData.data.length == 0) 
-// 				{
-// 					const card = generateNoneFound();
-// 					cardContainer.appendChild(card);
-// 				}
-// 				else 
-// 				{
-// 					let index = 0;
-// 					let ratingID = 0;
-// 					while (ReturnData.data[index] && typeof ReturnData.data[index].Name !== "undefined") {
-// 						let card = GenerateWineCard
-// 							(
-// 								ReturnData.data[index].Image,
-// 								ReturnData.data[index].Name,
-// 								ReturnData.data[index].Category,
-// 								ReturnData.data[index].Winery,
-// 								ReturnData.data[index].Country,
-// 								ReturnData.data[index].Price,
-// 								ReturnData.data[index].Year,
-// 								ratingID,
-// 								ReturnData.data[index].Wine_ID,
-// 								UserID,
-// 								isLoggedIn,
-// 								Number(ReturnData.data[index].Average_Rating).toFixed(2)
-// 							);
-
-// 						cardContainer.appendChild(card);
-
-// 						for (let i = 0; i < ReturnDataRatings.data.length; i++) 
-// 						{
-// 							if(ReturnDataRatings.data[i].Wine_ID == ReturnData.data[index].Wine_ID) 
-// 							{
-// 								for (let j = ratingID; j < ratingID + Number(ReturnDataRatings.data[i].Rating); j++) 
-// 								{
-// 									document.getElementById(j).checked = true;
-// 								}
-// 							}
-// 						}
-
-// 						ratingID += 5;
-// 						index++;
-// 					}
-// 				}
-// 			})
-// 			.catch(error => {
-// 				console.log("Error fetching data:", error);
-// 			});
-// 	})
-// 	.catch(error => {
-// 		console.log("Error fetching data:", error);
-// 	});
-// }
-
-
-
-
-function GenerateWineCard(image, name, type, winery, country, price, year, index, WineID, UserID, loggedIn, AverageRating) {
+function GenerateWineCard(image, name, type, winery, country, price, year, index, WineID, UserID, loggedIn, AverageRating) 
+{
 	const card = document.createElement("div");
 	card.classList.add("Wine");
 
@@ -391,17 +299,22 @@ function Ratings(WineName, Rating, WineID)
 	console.clear();
 
 	let index = 0;
-	for (index = 0; index < Stars.length; index++) {
-		if (Stars[index].value == WineName) {
+	for (index = 0; index < Stars.length; index++) 
+	{
+		if (Stars[index].value == WineName) 
+		{
 			let rangeStart = index;
 			let rangeEnd = index + 4;
 			Rating = Rating + index;
 
-			for (let index2 = rangeStart; index2 <= rangeEnd; index2++) {
-				if (index2 <= Rating) {
+			for (let index2 = rangeStart; index2 <= rangeEnd; index2++) 
+			{
+				if (index2 <= Rating) 
+				{
 					Stars[index2].checked = true;
 				}
-				else {
+				else 
+				{
 					Stars[index2].checked = false;
 				}
 
