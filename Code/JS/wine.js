@@ -19,23 +19,26 @@ var UserID = getCookie("UserID");
 
 function APIRequest(Request)
 {
-    let postData = 
-    {
-        "apikey": "69",
-        "query": "SELECT",
-        "type": "CustomQuery",
-        "Query": "SELECT * FROM Rating WHERE User_ID = " + UserID + ";"
-    };
+	console.log(Request);
+    // let postData = 
+    // {
+    //     "apikey": "69",
+    //     "query": "SELECT",
+    //     "type": "CustomQuery",
+    //     "Query": "SELECT * FROM Rating WHERE User_ID = " + UserID + ";"
+    // };
 
-    const xhttp = new XMLHttpRequest();
-    xhttp.onload = function () 
-    {
-        let ReturnDataRatings = JSON.parse(this.responseText);
+    // const xhttp = new XMLHttpRequest();
+    // xhttp.onload = function () 
+    // {
+        // let ReturnDataRatings = JSON.parse(this.responseText);
 
         const xhttp = new XMLHttpRequest();
         xhttp.onload = function () 
         {
+			// let ReturnData = this.responseText;
             let ReturnData = JSON.parse(this.responseText)
+			console.log(ReturnData);
 
             if (ReturnData.status == "error" || ReturnData.data.length == 0) 
             {
@@ -46,7 +49,7 @@ function APIRequest(Request)
             {
                 let index = 0;
                 let ratingID = 0;
-                while (ReturnData.data[index] && typeof ReturnData.data[index].Name !== 'undefined') 
+                while (ReturnData.data[index] && typeof ReturnData.data[index].Name != 'undefined') 
                 {
                     let card = GenerateWineCard
                     (
@@ -54,20 +57,21 @@ function APIRequest(Request)
                         ReturnData.data[index].Category, ReturnData.data[index].Winery,
                         ReturnData.data[index].Country, ReturnData.data[index].Price,
                         ReturnData.data[index].Year, ratingID, ReturnData.data[index].Wine_ID, UserID, isLoggedIn, // change when user is logged in,
-                        Number(ReturnData.data[index].Average_Rating).toFixed(2)
+                        Number(ReturnData.data[index].Rating).toFixed(2)
+						// 1
                     );
                     cardContainer.appendChild(card);
 
-                    for (let i = 0; i < ReturnDataRatings.data.length; i++) 
-                    {
-                        if (ReturnDataRatings.data[i].Wine_ID == ReturnData.data[index].Wine_ID) 
-                        {
-                            for (let j = ratingID; j < ratingID + (Number)(ReturnDataRatings.data[i].Rating); j++)
-                            {
-                                document.getElementById(j).checked = true;
-                            }
-                        }
-                    }
+                    // for (let i = 0; i < ReturnDataRatings.data.length; i++) 
+                    // {
+                    //     if (ReturnDataRatings.data[i].Wine_ID == ReturnData.data[index].Wine_ID) 
+                    //     {
+                    //         for (let j = ratingID; j < ratingID + (Number)(ReturnDataRatings.data[i].Rating); j++)
+                    //         {
+                    //             document.getElementById(j).checked = true;
+                    //         }
+                    //     }
+                    // }
 
                     ratingID += 5;
                     index++;
@@ -76,9 +80,11 @@ function APIRequest(Request)
         }
         xhttp.open("POST", "http://127.0.0.1:8080", true);
         xhttp.send(JSON.stringify(Request));
-    }
-    xhttp.open("POST", "http://127.0.0.1:8080", true);
-    xhttp.send(JSON.stringify(postData));
+		
+    // }
+    // xhttp.open("POST", "http://127.0.0.1:8080", true);
+    // xhttp.send(JSON.stringify(postData));
+	// console.log(postData);
 }
 
 function GenerateWineCard(image, name, type, winery, country, price, year, index, WineID, UserID, loggedIn, AverageRating) 
@@ -289,15 +295,44 @@ function ApplyFilters()
 		+ 'Wine.Year ';
 
 
-	console.log(Request);
+	// console.log(Request);
 
-	let postData =
+	// let postData =
+	// {
+	// 	"apikey": "69",
+	// 	"query": "SELECT",
+	// 	"type": "CustomQuery",
+	// 	"Query": Request
+	// };
+
+	let postData = 
 	{
-		"apikey": "69",
-		"query": "SELECT",
-		"type": "CustomQuery",
-		"Query": Request
+		"type": "getAllWines",
+		"returnWines": 
+		[
+		  "Wine_ID",
+		  "Image",
+		  "Name",
+		  "Category",
+		  "winery",
+		  "location",
+		  "Price",
+		  "Year",
+		  "rating"
+		],
+		"group":
+		[
+			"Wine.Wine_ID",
+			"Wine.Image",
+			"Wine.Name",
+			"Wine.Category",
+			"Winery.Name",
+			"Location.Country",
+			"Wine.Price",
+			"Wine.Year"
+		]
 	};
+
 	APIRequest(postData);
 }
 
