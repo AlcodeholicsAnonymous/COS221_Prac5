@@ -132,7 +132,7 @@ function AddWine()
     let postData = 
     {
         "query": "INSERT",
-        "type": "CustomQuery",
+        "type": "addWine",
         "Query": Request
     };
     APIRequest(postData);

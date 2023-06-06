@@ -62,7 +62,7 @@ function APIRequest(Request)
         let ReturnData = JSON.parse(this.responseText)
         console.log(ReturnData);
 
-        if (ReturnData.status == "error" || ReturnData.data.length == 0) 
+        if (ReturnData.status == "error") 
         {
             document.getElementById("FillTitle").style.color = "red";
             document.getElementById("FillTitle").value = "Something Wrong";
@@ -76,7 +76,7 @@ function APIRequest(Request)
 
         }
     }
-    
+
     xhttp.open("POST", "http://127.0.0.1:8080", true);
     xhttp.send(JSON.stringify(Request));
     console.log(JSON.stringify(Request));
@@ -149,7 +149,7 @@ function Update()
     {
       
         "query": "UPDATE",
-        "type": "CustomQuery",
+        "type": "updateWine",
         "Query": Request
     };
     APIRequest(postData);
@@ -194,7 +194,7 @@ function Delete()
     {
       
         "query": "DELETE",
-        "type": "CustomQuery",
+        "type": "deleteWine",
         "Query": Request
     };
     APIRequest(postData);
