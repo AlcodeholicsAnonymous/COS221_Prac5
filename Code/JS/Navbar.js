@@ -1,6 +1,7 @@
 var Navbar = document.getElementById("Navbar");
 
-function PopulateNav() {
+function PopulateNav() 
+{
   const name = getCookie("name");
   const surname = getCookie("surname");
   const isLoggedIn = getCookie("LoggedIn");
@@ -18,70 +19,74 @@ function PopulateNav() {
       <a href="../HTML/Wine.html">
           Wines
       </a>
-      <a href="../HTML/wineries.html">
+      <a href="../HTML/winery.html">
           Wineries
-      </a>
-      <a href="#">
-          Wine Routes
       </a>
     `;
 
-    // let postData =
-	// {
-	// 	"apikey": "69",
-	// 	"query": "SELECT",
-	// 	"type": "CustomQuery",
-	// 	"Query": "SELECT * FROM Winery WHERE Admin_ID = " + getCookie("UserID") + ";"
-	// };
+  let postData =
+  {
+		"type" : "getAllWineries",
+		"returnWineries" : [ "Admin_ID", "name", "location", "rating", "Image"],
+		"sort" : "country",
+		"order" : "ASC",
+		"limit" : 20,
+    "searchWineries":
+		{
+			"Admin_ID": UserID
+		}
+	};
 
-    // const xhttp = new XMLHttpRequest();
-	// xhttp.onload = function () 
-    // {
-	// 	let ReturnData = JSON.parse(this.responseText)
-	// 	console.log(ReturnData);
+  const xhttp = new XMLHttpRequest();
+  xhttp.onload = function () 
+  {
+    let ReturnData = JSON.parse(this.responseText)
+    // console.log(ReturnData);
 
-		// if (ReturnData.status == "error" || ReturnData.data.length == 0 || getCookie("UserID") == "None")
-        // {
-        //     console.log("Not Admin");
-		// }
-        // else
-        // {
-        //     console.log("Admin");
-        //     NavLinks.innerHTML += `
-        //     <a href="#">
-        //         Manage Winery
-        //     </a>
-        //     `;
-        // }
+    if (ReturnData.status == "error" || ReturnData.data.length == 0 || getCookie("UserID") == "None") 
+    {
+      console.log("Not Admin");
+    }
+    else 
+    {
+      console.log("Admin");
+      NavLinks.innerHTML += `
+        <a href="#">
+            Add Wine
+        </a>
+        <a href="#">
+            Manage Winery
+        </a>
+        `;
+    }
 
-        // if (isLoggedIn) 
-        // {
-        //     NavLinks.innerHTML += `
-        //     <a href="../PHP/Logout.php" onclick="return LogoutWarning()">
-        //         ${name} ${surname} (Logout)
-        //     </a>
-        //     `;
-        // } 
-        // else 
-        // {
-        //     NavLinks.innerHTML += `
-        //     <a href="../PHP/login.php">
-        //         Login
-        //     </a>
-        //     `;
-        // }
+    if (isLoggedIn) 
+    {
+      NavLinks.innerHTML += `
+            <a href="../PHP/Logout.php" onclick="return LogoutWarning()">
+                ${name} ${surname} (Logout)
+            </a>
+            `;
+    }
+    else 
+    {
+      NavLinks.innerHTML += `
+        <a href="../PHP/login.php">
+            Login
+        </a>
+        `;
+    }
 
-	// }
-	// xhttp.open("POST", "http://127.0.0.1:8080", true);
-	// xhttp.send(JSON.stringify(postData));
+  }
+  xhttp.open("POST", "http://127.0.0.1:8080", true);
+  xhttp.send(JSON.stringify(postData));
 
-  
+
 
   Navbar.appendChild(NavLinks);
 }
 
-function getCookie(name) 
-{
+function getCookie(name) {
   const cookies = document.cookie.split(';');
 
   for (let i = 0; i < cookies.length; i++) {
@@ -98,7 +103,6 @@ function getCookie(name)
   return null;
 }
 
-function LogoutWarning() 
-{
-    return confirm("Are you sure you want to log out?");
+function LogoutWarning() {
+  return confirm("Are you sure you want to log out?");
 }

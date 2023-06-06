@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head> 
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wineries</title>
+    <title>Wines</title>
     <link rel="stylesheet" href="../CSS/winery.css">
     <link rel="stylesheet" href="../CSS/Navbar.css">
 </head>
 
-<body onload="PopulateNav(), ApplyFilters()">
+<body onload="ApplyFilters(), PopulateNav()">
     <div class="Container">
         <div class="Navbar" id="Navbar"></div>
         <div class="InfoContainer">
@@ -76,65 +76,38 @@
                     <button class="Button" onclick="ClearFilters()">Clear Filters</button>
                 </div>
             </div>
-
-
-            <div class="Winery">
-                <img class="WineryImage" src="https://sothebys-md.brightspotcdn.com/6b/0c/ec9a23ca4629b07dd2dd70d2ad5c/008n09407-xxxxx-chateau-backyard.jpg" alt="winery.img">
-                <h2>Château Margaux</h2>
-                <div class="WineInfoContainer">
-                    <table>
-                        <tr>
-                            <td>Country:</td>
-                            <td>Spain</td>
-                        </tr>
-                        <tr>
-                            <td>Region:</td>
-                            <td>La ninja</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                ${loggedIn ? `
-                                    <div class="Rating" id="Rating">
-                                    <label class="circular-checkbox">
-                                        <input type="checkbox" id="${index}" name="Stars" value="${name}" onclick="">
-                                        <span class="checkmark2"></span>
-                                    </label>
-                                    <label class="circular-checkbox">
-                                        <input type="checkbox" id="${index + 1}" name="Stars" value="${name}" onclick="">
-                                        <span class="checkmark2"></span>
-                                    </label>
-                                    <label class="circular-checkbox">
-                                        <input type="checkbox" id="${index + 2}" name="Stars" value="${name}" onclick="">
-                                        <span class="checkmark2"></span>
-                                    </label>
-                                    <label class="circular-checkbox">
-                                        <input type="checkbox" id="${index + 3}" name="Stars" value="${name}" onclick="">
-                                        <span class="checkmark2"></span>
-                                    </label>
-                                    <label class="circular-checkbox">
-                                        <input type="checkbox" id="${index + 4}" name="Stars" value="${name}" onclick="">
-                                        <span class="checkmark2"></span>
-                                    </label>
-                                    
-                                    </div>
-                                ` : ''}
-                            </td>
-                            <td>
-                                <p>Average Rating: ${AverageRating}</p>
-                            </td>
-                        </tr>
-                    </table>
-                    
-                </div>
-            </div>
-
-            <div class="WineryContainer" id="WineryContainer">
-                
-
+            <div class="WineContainer" id="WineContainer">
+                <!-- <div class="Wine">
+                    <div class="TopHalf">
+                        <div class="WineImage"></div>
+                        <div class="WineryName">
+                            <h1>
+                                Domaine Cooche-Cookie
+                            </h1>
+                        </div>
+                    </div>
+                    <div class="BottomHalf">
+                        <table>
+                            <tr>
+                                <td>Country:</td>
+                                <td>France</td>
+                                <td>Region:</td>
+                                <td>Burgundy</td>
+                            </tr>
+                            <tr>
+                                <td>Rating:</td>
+                                <td>5.0</td>
+                                <td>Wine Tasting:</td>
+                                <td>Yes</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div> -->
             </div>
         </div>
     </div>
     <script src="../JS/winery.js"></script>
     <script src="../JS/Navbar.js"></script>
 </body>
+
 </html>

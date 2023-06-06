@@ -66,7 +66,8 @@ function getManagedWinery($jsonData, $DBConnection)
     return $output[0];
 }
 
-switch ($jsonData->type) {
+switch ($jsonData->type) 
+{
     case "getAllWines":
         getAllWines($jsonData, $DBConnection);
         break;
@@ -81,6 +82,9 @@ switch ($jsonData->type) {
         break;
     case "updateWine":
         updateWine($jsonData, $DBConnection, $wineryID);
+        break;
+    case "CustomQuery":
+        CustomQuery($jsonData, $DBConnection);
         break;
     default:
         error("invalid type");
@@ -283,7 +287,101 @@ function addWine($jsonData, $DBConnection)
 
 function getAllWineries($jsonData, $DBConnection)
 {
+    $DBQuery = "SELECT ";
+    $addLocation = false;
+    $addRating = false;
+    $otherQuery = "";
+    if (isset($jsonData->returnWineries)) {
+        foreach ($jsonData->returnWineries as $key => $value) {
+            if ($value != "location" && $value != "winery" && $value != "rating") {
+                $otherQuery .= "Winery." . $value . ", ";
+            }
+            if ($value == "location") {
+                $addLocation = true;
+            }
+            if ($value == "rating") {
+                $addRating = true;
+            }
+        }
+    }
+
+    if ($addLocation) {
+        $otherQuery .= " Location.Country, Location.Region, ";
+    }
+
+    if ($addRating) {
+        $otherQuery .= " AVG(Rating.Rating) AS Average_Rating, ";
+    }
+    $DBQuery .= $otherQuery;
+    $DBQuery = substr($DBQuery, 0, -2);
+
+    $DBQuery .= " FROM Wine ";
+    $DBQuery .= " JOIN Winery ON Wine.Winery_ID = Winery.Winery_ID";
+
+    if ($addLocation) {
+        $DBQuery .= " JOIN Location ON Winery.Location_ID = Location.Location_ID";
+    }
+
+    if ($addRating) {
+        $DBQuery .= " LEFT JOIN Rating ON Wine.Wine_ID = Rating.Wine_ID";
+    }
+
+    $addLocation = false;
+    $addRating = false;
+
+    $types = "";
+
+    if (isset($jsonData->searchWineries)) {
+        $DBQuery .= " WHERE ";
+        $params = array();
+        foreach ($jsonData->searchWineries as $key => $value) {
+            if ($key == "rating") {
+                $types .= "i";
+                $DBQuery .= "wineryRating >= ? AND ";
+                $params[] = $jsonData->searchWineries->rating;
+            } else  if ($key == "location") {
+                $types .= "s";
+                $DBQuery .= "Country = ? AND ";
+                $params[] = $jsonData->searchWineries->location;
+            } else {
+                $types .= "s";
+                $DBQuery .= "Winery." . $key . " = ? AND ";
+                $params[] = $value;
+            }
+        }
+        $DBQuery = substr($DBQuery, 0, -5);
+    }
+
+    $DBQuery .= " GROUP BY Winery.Winery_ID";
+    if ($jsonData->sort) {
+        $DBQuery .= " ORDER BY " . $jsonData->sort;
+        if ($jsonData->order) {
+            $DBQuery .= " " . $jsonData->order;
+        }
+    }
+
+    // Checking to see if there is a limit on the number of rows returned
+    if ($jsonData->limit) {
+        $DBQuery .= " LIMIT " . $jsonData->limit;
+    }
+    
+    $statement = mysqli_prepare($DBConnection, $DBQuery);
+    
+    
+    checkStmt($statement, $DBConnection);
+
+    if (isset($params)) {
+        mysqli_stmt_bind_param($statement, $types, ...$params);
+    }
+    
+    checkExecute($statement, $DBConnection);
+    $result = mysqli_stmt_get_result($statement);
+    $output = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    $returnJson = array("status" => "success", "timestamp" => time(), "data" => $output);
+
+    echo json_encode($returnJson);
 }
+
 
 function deleteWine($jsonData, $DBConnection)
 {
@@ -347,4 +445,19 @@ function checkExecute($stmt, $conn)
         die();
         return;
     }
+}
+
+function CustomQuery($jsonData, $DBConnection)
+{
+    $DBQuery = $jsonData->Query;
+
+    $statement = mysqli_prepare($DBConnection, $DBQuery);
+    checkStmt($statement, $DBConnection);
+
+    checkExecute($statement, $DBConnection);
+    $result = mysqli_stmt_get_result($statement);
+    $output = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+    $returnJson = array("status" => "success", "timestamp" => time(), "data" => $output);
+    echo json_encode($returnJson);
 }
