@@ -66,10 +66,6 @@ switch ($jsonData->query) {
   }
 
 
-
-
-
-
 function selectQuery($jsonData, $DBConnection){
     $DBQuery = "SELECT Wine.Image, Wine.Name, Wine.Type, Winery.Name AS Winery, Location.Country, Wine.Price, Wine.Year FROM Wine JOIN Winery
     ON Wine.Winery_ID = Winery.Winery_ID JOIN Location ON Winery.Location_ID = Location.Location_ID ";
@@ -116,7 +112,6 @@ function selectQuery($jsonData, $DBConnection){
 
     $output = $result->fetch_all(MYSQLI_ASSOC);
 
-    //step 5: build response
     $returnJson = array("status"=>"success", "timestamp"=>time(), "data"=>$output);
     echo JSON_encode($returnJson);
 
@@ -127,11 +122,25 @@ function insertQuery($jsonData, $DBConnection){
 }
 
 function deleteQuery($jsonData, $DBConnection){
-    
+    if ($jsonData->type == "CustomQuery" && $jsonData->Query)
+    {
+        $DBQuery = $jsonData->Query;
+    }
+    $result = mysqli_query($DBConnection, $DBQuery);
+    $output = $result->fetch_all(MYSQLI_ASSOC);
+    $returnJson = array("status"=>"success", "timestamp"=>time(), "data"=>$output);
+    echo JSON_encode($returnJson);
 }
 
 function updateQuery($jsonData, $DBConnection){
-    
+    if ($jsonData->type == "CustomQuery" && $jsonData->Query)
+    {
+        $DBQuery = $jsonData->Query;
+    }
+    $result = mysqli_query($DBConnection, $DBQuery);
+    $output = $result->fetch_all(MYSQLI_ASSOC);
+    $returnJson = array("status"=>"success", "timestamp"=>time(), "data"=>$output);
+    echo JSON_encode($returnJson);
 }
 
 
