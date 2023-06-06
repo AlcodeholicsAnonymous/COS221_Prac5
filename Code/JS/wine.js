@@ -2,7 +2,7 @@
 var cardContainer = document.getElementById("WineContainer");
 var WineCategory = document.getElementById("WineCategory");
 var WineWinery = document.getElementById("Winery");
-var WineCountry = document.getElementById("Country");
+var Rating = document.getElementById("Rating");
 var WinePriceFrom = document.getElementById("PriceFrom");
 var WinePriceTo = document.getElementById("PriceTo");
 var WineYearFrom = document.getElementById("YearFrom");
@@ -202,7 +202,7 @@ function ClearFilters()
 	// console.log("Clearing Filters");
 	WineCategory.value = "None";
 	WineWinery.value = "None";
-	WineCountry.value = "None";
+	Rating.value = "None";
 	WinePriceFrom.value = "";
 	WinePriceTo.value = "";
 	WineYearFrom.value = "";
@@ -218,81 +218,104 @@ function ApplyFilters()
 	cardContainer.innerHTML = "";
 	// console.log("Applying Filters");
 
-	let Request =
-		'SELECT '
-		+ 'Wine.Wine_ID, '
-		+ 'Wine.Image, '
-		+ 'Wine.Name, '
-		+ 'Wine.Category, '
-		+ 'Winery.Name AS Winery, '
-		+ 'Location.Country, '
-		+ 'Wine.Price, '
-		+ 'Wine.Year, '
-		+ 'IFNULL(AVG(Rating.Rating), NULL) AS Average_Rating '
-		+ 'FROM '
-		+ 'Wine '
-		+ 'JOIN Winery ON Wine.Winery_ID = Winery.Winery_ID '
-		+ 'JOIN Location ON Winery.Location_ID = Location.Location_ID '
-		+ 'LEFT JOIN Rating ON Wine.Wine_ID = Rating.Wine_ID ';
+	
+	let postData = {};
+	postData.type = "getAllWines";
+	postData.returnWines =
+	[
+		"Wine_ID",
+		"Image",
+		"Name",
+		"Category",
+		"winery",
+		"location",
+		"Price",
+		"Year",
+		"rating"
+	];
+	postData.group =
+	[
+		"Wine.Wine_ID",
+		"Wine.Image",
+		"Wine.Name",
+		"Wine.Category",
+		"Winery.Name",
+		"Location.Country",
+		"Wine.Price",
+		"Wine.Year"
+	];
+	// postData.searchWines = 
+	// {
+	// 	"winery": "Penfolds"
+		
+	// };
+	postData.limit = 5
 
 
-	if (
+	if 
+	(
 		WineCategory.value != "None"
 		|| WineWinery.value != "None"
-		|| WineCountry.value != "None"
 		|| WinePriceFrom.value != ""
 		|| WinePriceTo.value != ""
 		|| WineYearFrom.value != ""
 		|| WineYearTo.value != ""
-	) {
-		Request += "WHERE "
-		if (WineCategory.value != "None") {
-			// console.log("Wine Category: " + WineCategory.value);
-			Request += 'Wine.Category = "' + WineCategory.value + '" AND ';
+	) 
+	{
+		postData.searchWines = {};
+		if (WineCategory.value != "None") 
+		{
+			postData.searchWines.category = WineCategory.value;
+			console.log("Category: " + WineCategory.value);
 		}
 
-		if (WineWinery.value != "None") {
-			// console.log("Winery: " + WineWinery.value);
-			Request += 'Winery.Name = "' + WineWinery.value + '" AND ';
+		if (WineWinery.value != "None") 
+		{
+			postData.searchWines.winery = WineWinery.value;
+			console.log("Winery: " + WineWinery.value);
 		}
 
-		if (WineCountry.value != "None") {
-			// console.log("Country: " + WineCountry.value);
-			Request += "Location.Country = '" + WineCountry.value + "' AND ";
+		if (WinePriceFrom.value != "") 
+		{
+			postData.searchWines.priceFrom = (Number)(WinePriceFrom.value);
+			console.log("Price From: " + postData.searchWines.priceFrom);
 		}
 
-		if (WinePriceFrom.value != "") {
-			// console.log("Price From: " + WinePriceFrom.value);
-			Request += "Wine.Price >= " + WinePriceFrom.value + " AND ";
+		if (WinePriceTo.value != "") 
+		{
+			postData.searchWines.priceTo = (Number)(WinePriceTo.value);
+			console.log("Price To: " + postData.searchWines.priceTo);
 		}
 
-		if (WinePriceTo.value != "") {
-			// console.log("Price To: " + WinePriceTo.value);
-			Request += "Wine.Price <= " + WinePriceTo.value + " AND ";
+		if (WineYearFrom.value != "") 
+		{
+			postData.searchWines.yearFrom = (Number)(WineYearFrom.value);
+			console.log("Year From: " + postData.searchWines.yearFrom);
 		}
 
-		if (WineYearFrom.value != "") {
-			// console.log("Year From: " + WineYearFrom.value);
-			Request += "Wine.Year >= " + WineYearFrom.value + " AND ";
+		if (WineYearTo.value != "") 
+		{
+			postData.searchWines.yearTo = (Number)(WineYearTo.value);
+			console.log("Year To: " + postData.searchWines.yearTo);
 		}
-
-		if (WineYearTo.value != "") {
-			// console.log("Year To: " + WineYearTo.value);
-			Request += "Wine.Year <= " + WineYearTo.value + " AND ";
-		}
-
-		Request = Request.substring(0, Request.length - 4);
+	}
+	
+	if (Rating.value != "None") 
+	{
+		postData.sort = "Rating";
+		postData.order = Rating.value;
+		console.log("Rating: " + Rating.value);
 	}
 
-	Request += 'GROUP BY '
-		+ 'Wine.Wine_ID, '
-		+ 'Wine.Image, '
-		+ 'Wine.Name, '
-		+ 'Wine.Category, '
-		+ 'Winery.Name, '
-		+ 'Location.Country, '
-		+ 'Wine.Price, '
-		+ 'Wine.Year ';
+	// Request += 'GROUP BY '
+	// 	+ 'Wine.Wine_ID, '
+	// 	+ 'Wine.Image, '
+	// 	+ 'Wine.Name, '
+	// 	+ 'Wine.Category, '
+	// 	+ 'Winery.Name, '
+	// 	+ 'Location.Country, '
+	// 	+ 'Wine.Price, '
+	// 	+ 'Wine.Year ';
 
 
 	// console.log(Request);
@@ -305,33 +328,8 @@ function ApplyFilters()
 	// 	"Query": Request
 	// };
 
-	let postData = 
-	{
-		"type": "getAllWines",
-		"returnWines": 
-		[
-		  "Wine_ID",
-		  "Image",
-		  "Name",
-		  "Category",
-		  "winery",
-		  "location",
-		  "Price",
-		  "Year",
-		  "rating"
-		],
-		"group":
-		[
-			"Wine.Wine_ID",
-			"Wine.Image",
-			"Wine.Name",
-			"Wine.Category",
-			"Winery.Name",
-			"Location.Country",
-			"Wine.Price",
-			"Wine.Year"
-		]
-	};
+	
+	  
 
 	APIRequest(postData);
 }
