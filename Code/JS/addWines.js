@@ -2,6 +2,7 @@ var cardContainer = document.getElementById("WineContainer");
 var WineCategory = document.getElementById("WineCategory");
 var WineName = document.getElementById("WineName");
 var WineType = document.getElementById("Type");
+var WineWinery = document.getElementById("Winery");
 var WinePriceFrom = document.getElementById("PriceFrom");
 var WineYearFrom = document.getElementById("YearFrom");
 var WinePicture = document.getElementById("WineImage");
@@ -10,12 +11,13 @@ var WinePicture = document.getElementById("WineImage");
 
 function backgroundGet(){
 
+    
+    if(getCookie("userID") !== 'undefiend'){
     let user = getCookie("userID");
-    let Request = "SELECT Image FROM Winery WHERE Admin_ID = '"+user+"'";  
+    let Request = "SELECT Winery_ID,Image FROM Winery WHERE Admin_ID = '"+user+"'";  
 
     let postData = 
     {
-        "apikey": "69",
         "query": "SELECT",
         "type": "CustomQuery",
         "Query": Request
@@ -37,7 +39,7 @@ function backgroundGet(){
             let index = 0;
             while (ReturnData.data[index] && typeof ReturnData.data[index].Name !== 'undefined') 
             {
-                
+                WineWinery.value = ReturnData.data[index].Winery_ID;
                 document.getElementById("infoCon").style.backgroundImage = "url('"+ReturnData.data[index].image+"')";
                 index++;
             }
@@ -49,6 +51,7 @@ function backgroundGet(){
     xhttp.open("POST", "http://127.0.0.1:8080", true);
     xhttp.send(JSON.stringify(postData));
     console.log(JSON.stringify(postData));
+}
 }
 
 
@@ -108,9 +111,10 @@ function AddWine()
 
         document.getElementById("FillTitle").style.color = "red";
 
-    }
+    }else
     {
         let Request = "INSERT INTO Wine (Winery_ID, Name, Year,Type,Image,Price,Available,Category) VALUES ("
+        +"'"+WineWinery.value+"',"
         +"'" +WineName.value+"',"
         +"'" +WineYearFrom.value+"',"
         +"'" +WineType.value+"',"
@@ -127,8 +131,7 @@ function AddWine()
       
     let postData = 
     {
-        "apikey": "69",
-        "query": "SELECT",
+        "query": "INSERT",
         "type": "CustomQuery",
         "Query": Request
     };

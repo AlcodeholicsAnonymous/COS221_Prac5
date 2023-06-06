@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add</title>
-    <link rel="stylesheet" href="../CSS/addWines.css">
+    <title>Manage</title>
+    <link rel="stylesheet" href="../CSS/manageWines.css">
 </head>
 
 <body onload="backgroundGet()">
@@ -30,15 +30,16 @@
                 </a>
             </li>
         </div>
-        <div class="InfoContainer" id = "infoCon">
+        <div class="InfoContainer">
+            
+        
             <div class="FilterContainer">
-                <div id= "FillTitle" style="font-size: 4.5vh;">Fill in Fields</div>
-
-                <div>
-                    <select class="Input" id="Winery" hidden = "true">
-                        <option value="None">---</option>
-                    </select>
-                </div>
+                <div style="font-size: 4.5vh;" class = "FillTitle">Update Wine</div>
+             <div>
+                <select class="Input" id="Winery" hidden = "true">
+                    <option value="None">---</option>
+                </select>
+            </div>
                 <div>
                     <label>Wine Category</label><br>
                     <select class="Input" id="WineCategory">
@@ -50,45 +51,49 @@
                         <option value="Sparkling">Sparkling</option>
                     </select>
                 </div>
-                <div>
-                    <label>Type</label> <br>
-                    <input type="text" class="AgeInput" id="Type" required ="required">
-                </div>
-                
+
                 <div>
                     <label>Name</label> <br>
-                    <input type="text" class="AgeInput" id="Name" required ="required">
+                    <input type="text" class="AgeInput" id="Name">
+              
+                </div>
+
+                
+                <div>
+                    <label>Type</label> <br>
+                    <input type="text" class="AgeInput" id="Type">
+              
                 </div>
                
                 <div>
-                    <label>Price</label> <br>
-                    <input type="number" class="AgeInput" id="PriceFrom" required ="required">
+                    <label>Wine Year</label><br>
+                    <input type="number" class="AgeInput" id="YearFrom">
                    
                 </div>
-                <div>
-                    <label>Wine Year</label><br>
-                    <input type="number" class="AgeInput" id="YearFrom" required ="required">
 
+                <div class = "update">
+                    <label>Available</label> <br>
+                    <input type="checkbox" class="check" id="Available"><br>
+                    <label>Price</label> <br>
+                    <input type="number" class="priceUp" id="PriceFrom"> <br>
+                    <br>
+                    
+                    <div class="ButtonContainer">
+                        <button class="Button" onclick="Update()">Update </button>
+                        <button class="Button" onclick="Clear()">Clear</button>
+                        <button class="Button" onclick="Delete()">Delete </button>
+                    </div>
+              
                 </div>
-                <div>
-                    <label>Insert Image</label><br>
-                <input type="image" src="" alt="Submit" width="48" height="48" id ="WineImage" required ="required">
-                </div>
-                <div class="ButtonContainer">
-                    <button class="Button" onclick="AddWine()">Add</button>
-                    <button class="Button" onclick="Clear()">Clear</button>
-                </div>
+                
 
+                
 
             </div>
-            
+          
         </div>
     </div>
-    <script src="../JS/addWines.js"></script>
-
-    
-
-
+    <script src="../JS/manageWines.js"></script>
 </body>
 
 </html>
