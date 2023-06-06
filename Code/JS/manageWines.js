@@ -90,7 +90,7 @@ function Update()
         let postData = 
         {
           
-            
+            "passwordHash" : Password,
             "type": "updateWine",
             "wineName" : WineName.value,
             "wineYear" : WineYearFrom.value,
@@ -139,7 +139,7 @@ function Delete()
         let postData = 
         {
           
-            
+            "passwordHash" : Password,
             "type": "deleteWine",
             "wineName" : WineName.value,
             "wineYear" : WineYearFrom.value,

@@ -6,7 +6,7 @@ var WineWinery = document.getElementById("Winery");
 var WinePriceFrom = document.getElementById("PriceFrom");
 var WineYearFrom = document.getElementById("YearFrom");
 var WinePicture = document.getElementById("Image");
-
+var Password = getCookie("Password");
 
 
 
@@ -21,12 +21,14 @@ function APIRequest(Request)
 
         if (ReturnData.status == "error" || ReturnData.data.length == 0) 
         {
-      
+            document.getElementById("FillTitle").innerHTML = "Something Wrong";
+            document.getElementById("FillTitle").style.color = "red";
         }
         else 
         {
            
-            //return thing;
+            document.getElementById("FillTitle").style.color = "green";
+            document.getElementById("FillTitle").innerHTML = "Succes";
 
         }
     }
@@ -63,6 +65,7 @@ function AddWine()
     || WineYearFrom.value == "" 
     || WinePicture.value == ""){
 
+        document.getElementById("FillTitle").innerHTML= "Fill in all Fields";
         document.getElementById("FillTitle").style.color = "red";
 
     }else
@@ -84,7 +87,7 @@ function AddWine()
     console.log(Request);
       
     let postData = 
-    {
+    {   "passwordHash" : Password,
         "type": "addWine",
         "wine": wine
     };
