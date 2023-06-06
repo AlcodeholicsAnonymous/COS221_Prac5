@@ -116,7 +116,14 @@ function GenerateWineCard(image, name, type, winery, country, price, year, index
                   <td>Year:</td>
                   <td>${year}</td>
               </tr>
+			  <tr>
+                  <td>Expert Rating:</td>
+                  <td>${AverageRating}</td>
+              </tr>
               <tr>
+			  <td>
+			  	<p>Your Rating: </p>
+			  </td>
                 <td>
                     ${loggedIn ? `
                         <div class="Rating" id="Rating">
@@ -143,9 +150,6 @@ function GenerateWineCard(image, name, type, winery, country, price, year, index
                         
                         </div>
                     ` : ''}
-                </td>
-                <td>
-                    <p>Average Rating: ${AverageRating}</p>
                 </td>
               </tr>
           </table>
