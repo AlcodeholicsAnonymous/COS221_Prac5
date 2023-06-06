@@ -21,24 +21,13 @@ header('Access-Control-Allow-Headers: Content-Type');
 $postData = file_get_contents('php://input');
 $jsonData = json_decode($postData);
 
-
-
 try {
     $DBConnection = mysqli_connect($host, $username, $password, $database);
 } catch (Exception $th) {
     error("Server error");
 }
 
-
 //validation
-if (!isset($jsonData->query)) {
-    error("no query type");
-}
-
-if (!isset($jsonData->from)) {
-    error("no table");
-}
-
 function auth($jsonData, $DBConnection)
 {
     if (!isset($jsonData->passwordHash)) {
@@ -90,7 +79,7 @@ switch ($jsonData->type) {
         deleteWine($jsonData, $DBConnection);
         break;
     case "updateWine":
-        updateWine($jsonData, $DBConnection, $wineryID);
+        updateWine($jsonData, $DBConnection);
         break;
     default:
         error("invalid type");
@@ -147,7 +136,7 @@ function getAllWines($jsonData, $DBConnection)
     }
 
     if ($addRating) {
-        $DBQuery .= " JOIN Rating ON Wine.Wine_ID = Rating.Wine_ID";
+        $DBQuery .= " LEFT JOIN Rating ON Wine.Wine_ID = Rating.Wine_ID";
     }
 
     $addLocation = false;
@@ -198,6 +187,17 @@ function getAllWines($jsonData, $DBConnection)
         $DBQuery .= " LIMIT " . $jsonData->limit;
     }
 
+    if (isset($jsonData->group)) 
+    {
+        $DBQuery .= " GROUP BY ";
+        foreach ($jsonData->group as $key => $value) 
+        {
+            $DBQuery .= $value . ", ";
+        }
+    }
+
+    $DBQuery = substr($DBQuery, 0, -2);
+
     $statement = mysqli_prepare($DBConnection, $DBQuery);
     checkStmt($statement, $DBConnection);
 
@@ -210,32 +210,94 @@ function getAllWines($jsonData, $DBConnection)
     $result = mysqli_stmt_get_result($statement);
     $output = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
-    $returnJson = array("status" => "success", "timestamp" => time(), "data" => $output);
+    $returnJson = array("status" => "success", "timestamp" => time(), "data" => $output, "query" => $DBQuery);
     echo json_encode($returnJson);
 }
 
-function addWine($jsonData, $DBConnection)
+function getAllWineries($jsonData, $DBConnection)
 {
-    //check if user i
+    $DBQuery = "SELECT ";
+    $addLocation = false;
+    $addRating = false;
 
-    $DBQuery = "INSERT INTO Wine (";
-    $params = array();
-    foreach ($jsonData->wine as $key => $value) {
-        $DBQuery .= $key . ", ";
-        $params[] = $value;
+    if (isset($jsonData->returnWineries)) {
+        foreach ($jsonData->returnWineries as $key => $value) {
+            if ($value != "location" && $value != "winery" && $value != "rating") {
+                $DBQuery .= "Winery." . $value . ", ";
+            }
+            if ($value == "location") {
+                $addLocation = true;
+            }
+            if ($value == "rating") {
+                $addRating = true;
+            }
+        }
     }
-    $DBQuery = substr($DBQuery, 0, -2);
-    $DBQuery .= ") VALUES (";
-    foreach ($jsonData->wine as $key => $value) {
-        $DBQuery .= "?, ";
+    if ($addLocation) {
+        $DBQuery .= " Location.Country AS Country, Location.Region AS Region ";
     }
-    $DBQuery = substr($DBQuery, 0, -2);
-    $DBQuery .= ")";
 
+    if ($addRating) {
+        $DBQuery .= " (SELECT AVG(avg_winery_rating) AS average_rating
+                        FROM (
+                            SELECT AVG(Rating) AS avg_winery_rating
+                            FROM Rating
+                            INNER JOIN Wine ON Rating.Wine_ID = Wine.Wine_ID
+                            GROUP BY Wine.Winery_ID
+                        ) AS winery_ratings
+                    )AS wineryRating ";
+    }
+    
+    $DBQuery = substr($DBQuery, 0, -2);
+    $DBQuery .= " FROM Winery ";
+
+    if ($addLocation) {
+        $DBQuery .= " JOIN Location ON Winery.Location_ID = Location.Location_ID";
+    }
+
+    if ($addRating) {
+        $DBQuery .= " JOIN Wine ON Winery.Winery_ID = Wine.Winery_ID 
+                    JOIN Rating ON Wine.Wine_ID = Rating.Wine_ID ";
+    }
+
+    $addLocation = false;
+    $addRating = false;
+
+    if (isset($jsonData->searchWines)) {
+        $DBQuery .= " WHERE ";
+        $params = array();
+        foreach ($jsonData->searchWines as $key => $value) {
+            if ($value == "rating") {
+                $DBQuery .= "wineryRating >= ? AND ";
+                $params[] = $jsonData->searchWines->rating;
+            } else  if ($value == "location") {
+                $DBQuery .= "Country = ? AND ";
+                $params[] = $jsonData->searchWines->location;
+            } else {
+                $DBQuery .= "Winery." . $key . " = ? AND ";
+                $params[] = $value;
+            }
+        }
+        $DBQuery = substr($DBQuery, 0, -5);
+    }
+    //GROUP BY Winery.Winery_ID
+    if ($jsonData->sort) {
+        $DBQuery .= " ORDER BY " . $jsonData->sort;
+        if ($jsonData->order) {
+            $DBQuery .= " " . $jsonData->order;
+        }
+    }
+    // Checking to see if there is a limit on the number of rows returned
+    if ($jsonData->limit) {
+        $DBQuery .= " LIMIT " . $jsonData->limit;
+    }
     $statement = mysqli_prepare($DBConnection, $DBQuery);
     checkStmt($statement, $DBConnection);
-    $types = str_repeat('s', count($params));
-    mysqli_stmt_bind_param($statement, $types, ...$params);
+
+    if (isset($params)) {
+        $types = str_repeat('s', count($params));
+        mysqli_stmt_bind_param($statement, $types, ...$params);
+    }
     checkExecute($statement, $DBConnection);
     $result = mysqli_stmt_get_result($statement);
     $output = mysqli_fetch_all($result, MYSQLI_ASSOC);
@@ -244,70 +306,81 @@ function addWine($jsonData, $DBConnection)
     echo json_encode($returnJson);
 }
 
-function getAllWineries($jsonData, $DBConnection)
+function addWine($jsonData, $DBConnection)
 {
-}
+    if (auth($jsonData, $DBConnection)) {
+        $DBQuery = "INSERT INTO Wine (";
+        $types = "";
+        foreach ($jsonData->parameters as $key => $value) 
+        {
+            $sanitizedKey = mysqli_real_escape_string($DBConnection, $key); // Sanitize the column name
+            $DBQuery .= $sanitizedKey . ", ";
+            $params[] = $value;
+            typeof($value) == "string" ? $types .= "s" : $types .= "i";
+        }
+        ") VALUES (?,?,?,?,?,?)";
+        $statement = mysqli_prepare($DBConnection, $DBQuery);
+        checkStmt($statement, $DBConnection);
+        mysqli_stmt_bind_param($statement, $types, ...$params);
+        checkExecute($statement, $DBConnection);
+        $result = mysqli_stmt_get_result($statement);
+        $output = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
-function deleteWine($jsonData, $DBConnection)
-{
-
-    if (!isset($jsonData->wineName) || empty($jsonData->wineName || !isset($jsonData->wineYear) || empty($jsonData->wineYear) || !isset($jsonData->wineType) || empty($jsonData->wineType))) {
-        error("Missing Details");
-    }
-    $Winery = getManagedWinery($jsonData, $DBConnection);
-    $DBQuery = "DELETE FROM Wine WHERE ";
-    $params = array();
-    foreach ($jsonData->wine as $key => $value) {
-        $DBQuery .= $key . " = ? AND ";
-        $params[] = $value;
-    }
-    $DBQuery = substr($DBQuery, 0, -5);
-    $DBQuery .= " AND Winery_ID = ?";
-    $statement = mysqli_prepare($DBConnection, $DBQuery);
-    checkStmt($statement, $DBConnection);
-    $types = str_repeat('s', count($params));
-    mysqli_stmt_bind_param($statement, $types, ...$params);
-    checkExecute($statement, $DBConnection);
-    $result = mysqli_stmt_get_result($statement);
-    if ($result == false) {
-        error("Wine does not exist");
-    } else {
-        $returnJson = array("status" => "success", "timestamp" => time());
+        $returnJson = array("status" => "success", "timestamp" => time(), "data" => $output);
         echo json_encode($returnJson);
     }
 }
-function updateWine($jsonData, $DBConnection, $wineryID)
+function deleteWine($jsonData, $DBConnection)
 {
-    if (!isset($jsonData->wineName) || empty($jsonData->wineName || !isset($jsonData->wineYear) || empty($jsonData->wineYear) || !isset($jsonData->wineType) || empty($jsonData->wineType))) {
-        error("Missing Details");
+    if (auth($jsonData, $DBConnection)) 
+    {
+        if (!isset($jsonData->wineName) || empty($jsonData->wineName || !isset($jsonData->wineYear) || empty($jsonData->wineYear) || !isset($jsonData->wineType) || empty($jsonData->wineType))) {
+            error("Missing Details");
+        }
+        $Winery = getManagedWinery($jsonData, $DBConnection);
+        $DBQuery = "DELETE FROM Wine WHERE Wine_Name = ? AND Wine_Year = ? AND Wine_Type = ? AND Winery_ID = ?";
+        $statement = mysqli_prepare($DBConnection, $DBQuery);
+        checkStmt($statement, $DBConnection);
+        $types = "sisi";
+        $params = array($jsonData->wineName, $jsonData->wineYear, $jsonData->wineType, getManagedWinery($jsonData, $DBConnection)->Winery_ID);
+        mysqli_stmt_bind_param($statement, $types, ...$params);
+        checkExecute($statement, $DBConnection);
+        $result = mysqli_stmt_get_result($statement);
+        $output = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        $returnJson = array("status" => "success", "timestamp" => time(), "data" => $output);
+        echo json_encode($returnJson);
     }
-    $DBQuery = "UPDATE Wine (";
-    $params = array();
-    foreach ($jsonData->parameters as $key => $value) {
-        $DBQuery .= $key . ", ";
-        $params[] = $value;
-    }
-    $DBQuery = substr($DBQuery, 0, -2);
-    $DBQuery .= ") VALUES (";
-    foreach ($jsonData->parameters as $key => $value) {
-        $DBQuery .= "?, ";
-    }
-    $DBQuery = substr($DBQuery, 0, -2);
-    $DBQuery .= ") WHERE  Winery_ID = ? AND Name = ? AND Year = ? AND Type = ?";
-    $params[] = $wineryID;
-    $params[] = $jsonData->wineName;
-    $params[] = $jsonData->wineYear;
-    $params[] = $jsonData->wineType;
-    $statement = mysqli_prepare($DBConnection, $DBQuery);
-    checkStmt($statement, $DBConnection);
-    $types = str_repeat('s', count($params));
-    mysqli_stmt_bind_param($statement, $types, ...$params);
-    checkExecute($statement, $DBConnection);
-    $result = mysqli_stmt_get_result($statement);
-    if ($result == false) {
-        error("Wine does not exist");
-    } else {
-        $returnJson = array("status" => "success", "timestamp" => time(), "data" => "Wine Updated!");
+}
+function updateWine($jsonData, $DBConnection)
+{
+    if (auth($jsonData, $DBConnection)) 
+    {
+        if (!isset($jsonData->wineName) || empty($jsonData->wineName || !isset($jsonData->wineYear) || empty($jsonData->wineYear) || !isset($jsonData->wineType) || empty($jsonData->wineType))) {
+            error("Missing Details");
+        }
+        $DBQuery = "UPDATE Wine SET ";
+        $params = array();
+        foreach ($jsonData->parameters as $key => $value)
+        {
+            $sanitizedKey = mysqli_real_escape_string($DBConnection, $key); // Sanitize the column name
+            $DBQuery .= $sanitizedKey . " = ?, ";
+            typeof($value) == "string" ? $types .= "s" : $types .= "i";
+            $params[] = $value;
+        }
+        $DBQuery = substr($DBQuery, 0, -2);
+        $DBQuery .= " WHERE Wine_Name = ? AND Wine_Year = ? AND Wine_Type = ? AND Winery_ID = ?";
+        $params[] = $jsonData->wineName;
+        $params[] = $jsonData->wineYear;
+        $params[] = $jsonData->wineType;
+        $params[] = getManagedWinery($jsonData, $DBConnection)->Winery_ID;
+        $statement = mysqli_prepare($DBConnection, $DBQuery);
+        checkStmt($statement, $DBConnection);
+        $types .= "sisi";
+        mysqli_stmt_bind_param($statement, $types, ...$params);
+        checkExecute($statement, $DBConnection);
+        $result = mysqli_stmt_get_result($statement);
+        $output = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        $returnJson = array("status" => "success", "timestamp" => time(), "data" => $output);
         echo json_encode($returnJson);
     }
 }
@@ -327,5 +400,23 @@ function checkExecute($stmt, $conn)
         echo json_encode($output);
         die();
         return;
+    }
+}
+
+function getRecommendations($jsonData, $DBConnection){
+    $DBQuery = "SELECT Wine.Image, Wine.Name, Wine.Type, Winery.Name, Location.Country, Wine.Price, Wine.Year FROM Wine JOIN Winery
+    ON Wine.Winery_ID = Winery.Winery_ID JOIN Location ON Winery.Location_ID = Location.Location_ID ";
+    
+    $where = "WHERE ";
+    $params = array();
+    
+    if(isset ($jsonData->location) && !empty($jsonData->wineName)){
+        $where .= "Wine.Name = ? AND ";
+        $params[] = $jsonData->wineName;
+    }
+    
+    if ($jsonData->limit)
+    {
+        $DBQuery .= " LIMIT " . $jsonData->limit;
     }
 }
