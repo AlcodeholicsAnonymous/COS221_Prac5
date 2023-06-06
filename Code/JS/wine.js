@@ -121,11 +121,13 @@ function GenerateWineCard(image, name, type, winery, country, price, year, index
                   <td>${AverageRating}</td>
               </tr>
               <tr>
+			  ${loggedIn ? `
 			  <td>
 			  	<p>Your Rating: </p>
 			  </td>
+			  
                 <td>
-                    ${loggedIn ? `
+                    
                         <div class="Rating" id="Rating">
                         <label class="circular-checkbox">
                             <input type="checkbox" id="${index}" name="Stars" value="${name}" onclick="Ratings('${name}', 0, ${WineID})">
@@ -149,8 +151,9 @@ function GenerateWineCard(image, name, type, winery, country, price, year, index
                         </label>
                         
                         </div>
-                    ` : ''}
+                    
                 </td>
+				` : ''}
               </tr>
           </table>
           
