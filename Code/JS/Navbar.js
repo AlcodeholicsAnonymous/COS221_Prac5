@@ -8,7 +8,7 @@ function PopulateNav() {
   console.log("Generating Navbar");
 
   const LogoImg = document.createElement("img");
-  LogoImg.src = "../Img/Logo.jpg";
+  LogoImg.src = "../Img/Logo.png";
   Navbar.appendChild(LogoImg);
 
   const NavLinks = document.createElement("li");
@@ -101,31 +101,4 @@ function getCookie(name)
 function LogoutWarning() 
 {
     return confirm("Are you sure you want to log out?");
-}
-
-function IsAdmin(UserID)
-{
-    let postData =
-	{
-		"apikey": "69",
-		"query": "SELECT",
-		"type": "CustomQuery",
-		"Query": "SELECT * FROM Winery WHERE Admin_ID = " + UserID + ";"
-	};
-
-    const xhttp = new XMLHttpRequest();
-	xhttp.onload = function () 
-    {
-		let ReturnData = JSON.parse(this.responseText)
-		console.log(ReturnData);
-
-		if (ReturnData.status == "error" || ReturnData.length == 0) 
-        {
-			return false;
-		}
-
-        return true;
-	}
-	xhttp.open("POST", "http://127.0.0.1:8080", true);
-	xhttp.send(JSON.stringify(postData));
 }
