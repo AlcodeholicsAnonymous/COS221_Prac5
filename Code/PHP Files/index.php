@@ -96,7 +96,8 @@ function getAllWines($jsonData, $DBConnection)
     $addWinery = false;
     $addRating = false;
     if (isset($jsonData->returnWines)) {
-        foreach ($jsonData->returnWines as $key => $value) {
+        foreach ($jsonData->returnWines as $key => $value) 
+        {
             if ($value != "location" && $value != "winery" && $value != "rating") {
                 $DBQuery .= "Wine." . $value . ", ";
             }
@@ -142,49 +143,59 @@ function getAllWines($jsonData, $DBConnection)
     $addLocation = false;
     $addWinery = false;
 
-    if (isset($jsonData->searchWines)) {
+    if (isset($jsonData->searchWines)) 
+    {
         $DBQuery .= " WHERE ";
         $params = array();
-        foreach ($jsonData->searchWines as $key => $value) {
-            if ($value == "rating") {
-                $DBQuery .= "Rating.Rating >= ? AND ";
-                $params[] = $jsonData->searchWines->rating;
-            } else if ($value == "yearFrom") {
-                $DBQuery .= "Wine.Year >= ? AND ";
-                $params[] = $jsonData->searchWines->yearFrom;
-            } else  if ($value == "yearTo") {
-                $DBQuery .= "Wine.Year <= ? AND ";
-                $params[] = $jsonData->searchWines->yearTo;
-            } else if ($value == "priceFrom") {
-                $DBQuery .= "Wine.Price >= ? AND ";
-                $params[] = $jsonData->searchWines->priceFrom;
-            } else if ($value == "priceTo") {
-                $DBQuery .= "Wine.Price <= ? AND ";
-                $params[] = $jsonData->searchWines->priceTo;
-            } else  if ($value == "location") {
-                $DBQuery .= "Location.Country = ? AND ";
-                $params[] = $jsonData->searchWines->location;
-            } else if ($value == "winery") {
+        foreach ($jsonData->searchWines as $key => $value) 
+        {
+            if ($key == "category") 
+            {
+                $DBQuery .= "Wine.Category = ? AND ";
+                $params[] = $jsonData->searchWines->category;
+            }
+            else if ($key == "winery") 
+            {
                 $DBQuery .= "Winery.Name = ? AND ";
                 $params[] = $jsonData->searchWines->winery;
-            } else {
+            } 
+            else if ($key == "rating") 
+            {
+                $DBQuery .= "Rating.Rating >= ? AND ";
+                $params[] = $jsonData->searchWines->rating;
+            } 
+            else if ($key == "yearFrom") 
+            {
+                $DBQuery .= "Wine.Year >= ? AND ";
+                $params[] = $jsonData->searchWines->yearFrom;
+            } 
+            else  if ($key == "yearTo") 
+            {
+                $DBQuery .= "Wine.Year <= ? AND ";
+                $params[] = $jsonData->searchWines->yearTo;
+            } 
+            else if ($key == "priceFrom") 
+            {
+                $DBQuery .= "Wine.Price >= ? AND ";
+                $params[] = $jsonData->searchWines->priceFrom;
+            } 
+            else if ($key == "priceTo") 
+            {
+                $DBQuery .= "Wine.Price <= ? AND ";
+                $params[] = $jsonData->searchWines->priceTo;
+            } 
+            else  if ($key == "location") 
+            {
+                $DBQuery .= "Location.Country = ? AND ";
+                $params[] = $jsonData->searchWines->location;
+            } 
+            else 
+            {
                 $DBQuery .= "Wine." . $key . " = ? AND ";
                 $params[] = $value;
             }
         }
         $DBQuery = substr($DBQuery, 0, -5);
-    }
-
-    if ($jsonData->sort) {
-        $DBQuery .= " ORDER BY " . $jsonData->sort;
-        if ($jsonData->order) {
-            $DBQuery .= " " . $jsonData->order;
-        }
-    }
-
-    // Checking to see if there is a limit on the number of rows returned
-    if ($jsonData->limit) {
-        $DBQuery .= " LIMIT " . $jsonData->limit;
     }
 
     if (isset($jsonData->group)) 
@@ -195,8 +206,30 @@ function getAllWines($jsonData, $DBConnection)
             $DBQuery .= $value . ", ";
         }
     }
-
+    
     $DBQuery = substr($DBQuery, 0, -2);
+    
+    if ($jsonData->sort) 
+    {
+        if($jsonData->sort == "Rating")
+        {
+            $DBQuery .= " ORDER BY AVG(Rating.Rating)";
+        }
+        else
+        {
+            $DBQuery .= " ORDER BY " . $jsonData->sort;
+        }
+        
+        if ($jsonData->order) 
+        {
+            $DBQuery .= " " . $jsonData->order;
+        }
+    }
+    
+    // Checking to see if there is a limit on the number of rows returned
+    if ($jsonData->limit) {
+        $DBQuery .= " LIMIT " . $jsonData->limit;
+    }
 
     $statement = mysqli_prepare($DBConnection, $DBQuery);
     checkStmt($statement, $DBConnection);
@@ -211,6 +244,7 @@ function getAllWines($jsonData, $DBConnection)
     $output = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
     $returnJson = array("status" => "success", "timestamp" => time(), "data" => $output, "query" => $DBQuery);
+    // $returnJson = array("status" => "success", "query" => $DBQuery);
     echo json_encode($returnJson);
 }
 
