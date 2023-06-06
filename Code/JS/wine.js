@@ -10,153 +10,166 @@ var WineYearTo = document.getElementById("YearTo");
 var Stars = document.getElementsByName("Stars");
 var RatingDiv = document.getElementById("Rating");
 
-// function APIRequest(Request)
-// {
-//     let postData = 
-//     {
-//         "apikey": "69",
-//         "query": "SELECT",
-//         "type": "CustomQuery",
-//         "Query": "SELECT * FROM Rating WHERE User_ID = " + 3 + ";"
-//     };
+// Cookie Information
+var isLoggedIn = getCookie("LoggedIn");
+var Name = getCookie("name");
+var Surname = getCookie("surname");
+var UserID = getCookie("UserID");
 
-//     const xhttp = new XMLHttpRequest();
-//     xhttp.onload = function () 
-//     {
-//         let ReturnDataRatings = JSON.parse(this.responseText);
 
-//         const xhttp = new XMLHttpRequest();
-//         xhttp.onload = function () 
-//         {
-//             let ReturnData = JSON.parse(this.responseText)
-
-//             if (ReturnData.status == "error" || ReturnData.data.length == 0) 
-//             {
-//                 const card = generateNoneFound();
-//                 cardContainer.appendChild(card);
-//             }
-//             else 
-//             {
-//                 let index = 0;
-//                 let ratingID = 0;
-//                 while (ReturnData.data[index] && typeof ReturnData.data[index].Name !== 'undefined') 
-//                 {
-//                     let card = GenerateWineCard
-//                     (
-//                         ReturnData.data[index].Image, ReturnData.data[index].Name,
-//                         ReturnData.data[index].Category, ReturnData.data[index].Winery,
-//                         ReturnData.data[index].Country, ReturnData.data[index].Price,
-//                         ReturnData.data[index].Year, ratingID, ReturnData.data[index].Wine_ID, 3, true, // change when user is logged in,
-//                         Number(ReturnData.data[index].Average_Rating).toFixed(2)
-//                     );
-//                     cardContainer.appendChild(card);
-
-//                     for (let i = 0; i < ReturnDataRatings.data.length; i++) 
-//                     {
-//                         if (ReturnDataRatings.data[i].Wine_ID == ReturnData.data[index].Wine_ID) 
-//                         {
-//                             for (let j = ratingID; j < ratingID + (Number)(ReturnDataRatings.data[i].Rating); j++)
-//                             {
-//                                 document.getElementById(j).checked = true;
-//                             }
-//                         }
-//                     }
-
-//                     ratingID += 5;
-//                     index++;
-//                 }
-//             }
-//         }
-//         xhttp.open("POST", "http://127.0.0.1:8080", true);
-//         xhttp.send(JSON.stringify(Request));
-//     }
-//     xhttp.open("POST", "http://127.0.0.1:8080", true);
-//     xhttp.send(JSON.stringify(postData));
-// }
-function APIRequest(Request) 
+function APIRequest(Request)
 {
-	let postData =
-	{
-		apikey: "69",
-		query: "SELECT",
-		type: "CustomQuery",
-		Query: "SELECT * FROM Rating WHERE User_ID = 3;"
-	};
+    let postData = 
+    {
+        "apikey": "69",
+        "query": "SELECT",
+        "type": "CustomQuery",
+        "Query": "SELECT * FROM Rating WHERE User_ID = " + UserID + ";"
+    };
 
-	fetch("http://127.0.0.1:8080",
-	{
-		method: "POST",
-		headers:
-		{
-			"Content-Type": "application/json"
-		},
-		body: JSON.stringify(postData)
-	})
-	.then(response => response.json())
-	.then(ReturnDataRatings => {
-		fetch("http://127.0.0.1:8080",
-			{
-				method: "POST",
-				headers:
-				{
-					"Content-Type": "application/json"
-				},
-				body: JSON.stringify(Request)
-			})
-			.then(response => response.json())
-			.then(ReturnData => {
-				if (ReturnData.status == "error" || ReturnData.data.length == 0) 
-				{
-					const card = generateNoneFound();
-					cardContainer.appendChild(card);
-				}
-				else 
-				{
-					let index = 0;
-					let ratingID = 0;
-					while (ReturnData.data[index] && typeof ReturnData.data[index].Name !== "undefined") {
-						let card = GenerateWineCard
-							(
-								ReturnData.data[index].Image,
-								ReturnData.data[index].Name,
-								ReturnData.data[index].Category,
-								ReturnData.data[index].Winery,
-								ReturnData.data[index].Country,
-								ReturnData.data[index].Price,
-								ReturnData.data[index].Year,
-								ratingID,
-								ReturnData.data[index].Wine_ID,
-								3,
-								true,
-								Number(ReturnData.data[index].Average_Rating).toFixed(2)
-							);
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function () 
+    {
+        let ReturnDataRatings = JSON.parse(this.responseText);
 
-						cardContainer.appendChild(card);
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function () 
+        {
+            let ReturnData = JSON.parse(this.responseText)
 
-						for (let i = 0; i < ReturnDataRatings.data.length; i++) 
-						{
-							if(ReturnDataRatings.data[i].Wine_ID == ReturnData.data[index].Wine_ID) 
-							{
-								for (let j = ratingID; j < ratingID + Number(ReturnDataRatings.data[i].Rating); j++) 
-								{
-									document.getElementById(j).checked = true;
-								}
-							}
-						}
+            if (ReturnData.status == "error" || ReturnData.data.length == 0) 
+            {
+                const card = generateNoneFound();
+                cardContainer.appendChild(card);
+            }
+            else 
+            {
+                let index = 0;
+                let ratingID = 0;
+                while (ReturnData.data[index] && typeof ReturnData.data[index].Name !== 'undefined') 
+                {
+                    let card = GenerateWineCard
+                    (
+                        ReturnData.data[index].Image, ReturnData.data[index].Name,
+                        ReturnData.data[index].Category, ReturnData.data[index].Winery,
+                        ReturnData.data[index].Country, ReturnData.data[index].Price,
+                        ReturnData.data[index].Year, ratingID, ReturnData.data[index].Wine_ID, UserID, isLoggedIn, // change when user is logged in,
+                        Number(ReturnData.data[index].Average_Rating).toFixed(2)
+                    );
+                    cardContainer.appendChild(card);
 
-						ratingID += 5;
-						index++;
-					}
-				}
-			})
-			.catch(error => {
-				console.log("Error fetching data:", error);
-			});
-	})
-	.catch(error => {
-		console.log("Error fetching data:", error);
-	});
+                    for (let i = 0; i < ReturnDataRatings.data.length; i++) 
+                    {
+                        if (ReturnDataRatings.data[i].Wine_ID == ReturnData.data[index].Wine_ID) 
+                        {
+                            for (let j = ratingID; j < ratingID + (Number)(ReturnDataRatings.data[i].Rating); j++)
+                            {
+                                document.getElementById(j).checked = true;
+                            }
+                        }
+                    }
+
+                    ratingID += 5;
+                    index++;
+                }
+            }
+        }
+        xhttp.open("POST", "http://127.0.0.1:8080", true);
+        xhttp.send(JSON.stringify(Request));
+    }
+    xhttp.open("POST", "http://127.0.0.1:8080", true);
+    xhttp.send(JSON.stringify(postData));
 }
+
+// function APIRequest(Request) 
+// {
+    
+//     console.log("Users name: " + Name);
+//     console.log("Users surname: " + Surname);
+//     console.log("Users ID: " + UserID);
+//     console.log("Users LoggedIn: " + isLoggedIn);
+// 	let postData =
+// 	{
+// 		apikey: "69",
+// 		query: "SELECT",
+// 		type: "CustomQuery",
+// 		Query: "SELECT * FROM Rating WHERE User_ID = " + UserID + ";"
+// 	};
+
+// 	fetch("http://127.0.0.1:8080",
+// 	{
+// 		method: "POST",
+// 		headers:
+// 		{
+// 			"Content-Type": "application/json"
+// 		},
+// 		body: JSON.stringify(postData)
+// 	})
+// 	.then(response => response.json())
+// 	.then(ReturnDataRatings => {
+// 		fetch("http://127.0.0.1:8080",
+// 			{
+// 				method: "POST",
+// 				headers:
+// 				{
+// 					"Content-Type": "application/json"
+// 				},
+// 				body: JSON.stringify(Request)
+// 			})
+// 			.then(response => response.json())
+// 			.then(ReturnData => {
+// 				if (ReturnData.status == "error" || ReturnData.data.length == 0) 
+// 				{
+// 					const card = generateNoneFound();
+// 					cardContainer.appendChild(card);
+// 				}
+// 				else 
+// 				{
+// 					let index = 0;
+// 					let ratingID = 0;
+// 					while (ReturnData.data[index] && typeof ReturnData.data[index].Name !== "undefined") {
+// 						let card = GenerateWineCard
+// 							(
+// 								ReturnData.data[index].Image,
+// 								ReturnData.data[index].Name,
+// 								ReturnData.data[index].Category,
+// 								ReturnData.data[index].Winery,
+// 								ReturnData.data[index].Country,
+// 								ReturnData.data[index].Price,
+// 								ReturnData.data[index].Year,
+// 								ratingID,
+// 								ReturnData.data[index].Wine_ID,
+// 								UserID,
+// 								isLoggedIn,
+// 								Number(ReturnData.data[index].Average_Rating).toFixed(2)
+// 							);
+
+// 						cardContainer.appendChild(card);
+
+// 						for (let i = 0; i < ReturnDataRatings.data.length; i++) 
+// 						{
+// 							if(ReturnDataRatings.data[i].Wine_ID == ReturnData.data[index].Wine_ID) 
+// 							{
+// 								for (let j = ratingID; j < ratingID + Number(ReturnDataRatings.data[i].Rating); j++) 
+// 								{
+// 									document.getElementById(j).checked = true;
+// 								}
+// 							}
+// 						}
+
+// 						ratingID += 5;
+// 						index++;
+// 					}
+// 				}
+// 			})
+// 			.catch(error => {
+// 				console.log("Error fetching data:", error);
+// 			});
+// 	})
+// 	.catch(error => {
+// 		console.log("Error fetching data:", error);
+// 	});
+// }
 
 
 
@@ -200,23 +213,23 @@ function GenerateWineCard(image, name, type, winery, country, price, year, index
                     ${loggedIn ? `
                         <div class="Rating" id="Rating">
                         <label class="circular-checkbox">
-                            <input type="checkbox" id="${index}" name="Stars" value="${name}" onclick="Ratings('${name}', '${UserID}', 0, ${WineID})">
+                            <input type="checkbox" id="${index}" name="Stars" value="${name}" onclick="Ratings('${name}', 0, ${WineID})">
                             <span class="checkmark2"></span>
                         </label>
                         <label class="circular-checkbox">
-                            <input type="checkbox" id="${index + 1}" name="Stars" value="${name}" onclick="Ratings('${name}', '${UserID}', 1, ${WineID})">
+                            <input type="checkbox" id="${index + 1}" name="Stars" value="${name}" onclick="Ratings('${name}', 1, ${WineID})">
                             <span class="checkmark2"></span>
                         </label>
                         <label class="circular-checkbox">
-                            <input type="checkbox" id="${index + 2}" name="Stars" value="${name}" onclick="Ratings('${name}', '${UserID}', 2, ${WineID})">
+                            <input type="checkbox" id="${index + 2}" name="Stars" value="${name}" onclick="Ratings('${name}', 2, ${WineID})">
                             <span class="checkmark2"></span>
                         </label>
                         <label class="circular-checkbox">
-                            <input type="checkbox" id="${index + 3}" name="Stars" value="${name}" onclick="Ratings('${name}', '${UserID}', 3, ${WineID})">
+                            <input type="checkbox" id="${index + 3}" name="Stars" value="${name}" onclick="Ratings('${name}', 3, ${WineID})">
                             <span class="checkmark2"></span>
                         </label>
                         <label class="circular-checkbox">
-                            <input type="checkbox" id="${index + 4}" name="Stars" value="${name}" onclick="Ratings('${name}', '${UserID}', 4, ${WineID})">
+                            <input type="checkbox" id="${index + 4}" name="Stars" value="${name}" onclick="Ratings('${name}', 4, ${WineID})">
                             <span class="checkmark2"></span>
                         </label>
                         
@@ -347,7 +360,7 @@ function ApplyFilters()
 			Request += "Wine.Year <= " + WineYearTo.value + " AND ";
 		}
 
-		Request = Request.substring(0, Request.length - 5);
+		Request = Request.substring(0, Request.length - 4);
 	}
 
 	Request += 'GROUP BY '
@@ -361,7 +374,7 @@ function ApplyFilters()
 		+ 'Wine.Year ';
 
 
-	// console.log(Request);
+	console.log(Request);
 
 	let postData =
 	{
@@ -373,7 +386,8 @@ function ApplyFilters()
 	APIRequest(postData);
 }
 
-function Ratings(WineName, UserID, Rating, WineID) {
+function Ratings(WineName, Rating, WineID) 
+{
 	console.clear();
 
 	let index = 0;
@@ -403,10 +417,13 @@ function Ratings(WineName, UserID, Rating, WineID) {
 	console.log("User ID:\t" + UserID);
 	console.log("Rating:\t" + (Rating));
 
-	GetRating(UserID, WineID, Rating, index);
+	GetRating(WineID, Rating, index);
 }
 
-function GetRating(UserID, WineID, Rating) {
+function GetRating(WineID, Rating) 
+{
+    console.clear();
+    console.log("Getting rating where Wine ID = " + WineID + " and User ID = " + UserID);
 	let postData =
 	{
 		"apikey": "69",
@@ -438,29 +455,52 @@ function GetRating(UserID, WineID, Rating) {
 			"values":
 			{
 				"Wine_ID": WineID,
-				"User_ID": UserID,
+				"User_ID": (Number)(UserID),
 				"Rating": Rating
 			}
 		};
 
-		SetRating(JSON.stringify(postData));
+		SetRating(postData);
 	}
 	xhttp.open("POST", "http://127.0.0.1:8080", true);
 	xhttp.send(JSON.stringify(postData));
-	// console.log(postData);
+    
 }
 
-function SetRating(postData) {
+function SetRating(postData) 
+{
 	const xhttp = new XMLHttpRequest();
-	xhttp.onload = function () {
+	xhttp.onload = function () 
+    {
 		let ReturnData = JSON.parse(this.responseText)
 		console.log(ReturnData);
 
-		if (ReturnData.status == "error") {
+		if (ReturnData.status == "error") 
+        {
 			console.log("Error: " + ReturnData.message);
 		}
 	}
 	xhttp.open("POST", "http://127.0.0.1:8080", true);
-	xhttp.send(postData);
+	xhttp.send(JSON.stringify(postData));
+    console.log("Post Data")
+	console.log(postData);
+}
+
+function getCookie(name) 
+{
+  const cookies = document.cookie.split(';');
+
+  for (let i = 0; i < cookies.length; i++) {
+    const cookie = cookies[i].trim();
+
+    // Check if the cookie starts with the provided name
+    if (cookie.startsWith(name + '=')) {
+      // Extract and return the cookie value
+      return cookie.substring(name.length + 1);
+    }
+  }
+
+  // Cookie not found
+  return null;
 }
 

@@ -1,7 +1,6 @@
 <?php
 
-function error($msg)
-{
+function error($msg){
     $error = array("status"=>"error", "timestamp"=>time(), "data"=>$msg);
     echo JSON_encode($error);
     die();
@@ -31,25 +30,21 @@ try {
 
 
 //validation
-if(!isset($jsonData->query))
-{
+if(!isset($jsonData->query)){
     error("no query type");
 }
 
-if(!isset($jsonData->apikey))
-{
+if(!isset($jsonData->apikey)){
     error("no api key");
 }
 
-if($jsonData->apikey != "69")
-{
+if($jsonData->apikey != "69"){
     error("invalid api key");
 }
 
 
 
-switch ($jsonData->query) 
-{
+switch ($jsonData->query) {
     case "SELECT":
         selectQuery($jsonData, $DBConnection);
         break;
@@ -104,7 +99,6 @@ function updateQuery($jsonData, $DBConnection)
     );
     echo json_encode($returnJson);
 }
-
 
 //this query returns the whole picture thing you showed in the discord meeting
 /*$query = "SELECT Wine.image, Wine.Name, Wine.Type, Winery.Name, Location.Country, Wine.Price, Wine.Year FROM Wine JOIN Winery
@@ -269,7 +263,7 @@ function selectQuery($jsonData, $DBConnection){
     $output = $result->fetch_all(MYSQLI_ASSOC);
 
     //step 5: build response
-    $returnJson = array("status"=>"success", "timestamp"=>time(), "data"=>$output, "query"=>$DBQuery);
+    $returnJson = array("status"=>"success", "timestamp"=>time(), "data"=>$output);
     echo JSON_encode($returnJson);
 
 }
