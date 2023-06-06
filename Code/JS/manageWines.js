@@ -5,7 +5,7 @@ var WineType = document.getElementById("Type");
 var WinePriceFrom = document.getElementById("PriceFrom");
 var WineYearFrom = document.getElementById("YearFrom");
 var WineAvailable = document.getElementById("Available");
-
+var Password = getCookie("Password");
 
 
 

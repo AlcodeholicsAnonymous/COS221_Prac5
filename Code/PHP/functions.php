@@ -154,6 +154,7 @@ function loginUser($conn, $email, $password)
         setcookie("LoggedIn", true, time() + (86400 * 30), "/"); // 86400 = 1 day
         setcookie("isExpert", $emailExists["Is_Expert"], time() + (86400 * 30), "/"); // 86400 = 1 day
         setcookie("UserID", $emailExists["User_ID"], time() + (86400 * 30), "/"); // 86400 = 1 day
+        setcookie("password", $emailExists["Password"], time() + (86400 * 30), "/"); // 86400 = 1 day
         header("Location: ../HTML/Wine.html");
     }
 }
