@@ -454,19 +454,34 @@ function checkExecute($stmt, $conn)
 }
 
 function getRecommendations($jsonData, $DBConnection){
-    $DBQuery = "SELECT Wine.Image, Wine.Name, Wine.Type, Winery.Name, Location.Country, Wine.Price, Wine.Year FROM Wine JOIN Winery
-    ON Wine.Winery_ID = Winery.Winery_ID JOIN Location ON Winery.Location_ID = Location.Location_ID ";
+    $location = "";
     
-    $where = "WHERE ";
-    $params = array();
-    
-    if(isset ($jsonData->location) && !empty($jsonData->wineName)){
-        $where .= "Wine.Name = ? AND ";
-        $params[] = $jsonData->wineName;
+    if(isset ($jsonData->location)){
+        $location = $jsonData->location;
     }
-    
+    $limit = "";
+
     if ($jsonData->limit)
     {
-        $DBQuery .= " LIMIT " . $jsonData->limit;
+        $limit = $jsonData->limit;
     }
+    
+    $DBQuery = "SELECT Winery.Name, AVG(Rating.Rating) AS AverageRating
+    FROM Rating
+    JOIN Wine ON Rating.Wine_ID = Wine.Wine_ID
+    JOIN Winery ON Wine.Winery_ID = Winery.Winery_ID
+    JOIN Locations ON Winery.Location_ID = Locations.Location_ID
+    WHERE Locations.Country = '$location'
+    GROUP BY Winery.Name
+    ORDER BY AverageRating DESC
+    LIMIT '$limit';";
+    
+    $statement = mysqli_prepare($DBConnection, $DBQuery);
+    checkStmt($statement, $DBConnection);
+    checkExecute($statement, $DBConnection);
+    $result = mysqli_stmt_get_result($statement);
+    $output = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    $returnJson = array("status" => "success", "timestamp" => time(), "data" => $output, "query" => $DBQuery);
+    // $returnJson = array("status" => "success", "query" => $DBQuery);
+    echo json_encode($returnJson);
 }
