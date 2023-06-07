@@ -39,7 +39,7 @@ function APIRequest(Request)
         {
            
             document.getElementById("FillTitle").style.color = "green";
-            document.getElementById("FillTitle").innerHTML = "Succes";
+            document.getElementById("FillTitle").innerHTML = "Success";
             
 
         }

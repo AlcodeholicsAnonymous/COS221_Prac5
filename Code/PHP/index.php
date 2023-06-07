@@ -62,7 +62,8 @@ function getManagedWinery($jsonData, $DBConnection)
     return $output[0]["Winery_ID"];
 }
 
-switch ($jsonData->type) {
+switch ($jsonData->type) 
+{
     case "getAllWines":
         getAllWines($jsonData, $DBConnection);
         break;
@@ -76,7 +77,10 @@ switch ($jsonData->type) {
         deleteWine($jsonData, $DBConnection);
         break;
     case "updateWine":
-        updateWine($jsonData, $DBConnection);
+        updateWine($jsonData, $DBConnection, $wineryID);
+        break;
+    case "CustomQuery":
+        CustomQuery($jsonData, $DBConnection);
         break;
     default:
         error("invalid type");
@@ -250,10 +254,12 @@ function getAllWineries($jsonData, $DBConnection)
     $DBQuery = "SELECT ";
     $addLocation = false;
     $addRating = false;
-
-    if (isset($jsonData->returnWineries)) {
-        foreach ($jsonData->returnWineries as $key => $value) {
-            if ($value != "location" && $value != "winery" && $value != "rating") {
+    if (isset($jsonData->returnWineries)) 
+    {
+        foreach ($jsonData->returnWineries as $key => $value) 
+        {
+            if ($value != "location" && $value != "winery" && $value != "rating") 
+            {
                 $DBQuery .= "Winery." . $value . ", ";
             }
             if ($value == "location") {
@@ -264,76 +270,82 @@ function getAllWineries($jsonData, $DBConnection)
             }
         }
     }
+
     if ($addLocation) {
-        $DBQuery .= " Location.Country AS Country, Location.Region AS Region ";
+        $DBQuery .= " Location.Country, Location.Region, ";
     }
 
     if ($addRating) {
-        $DBQuery .= " (SELECT AVG(avg_winery_rating) AS average_rating
-                        FROM (
-                            SELECT AVG(Rating) AS avg_winery_rating
-                            FROM Rating
-                            INNER JOIN Wine ON Rating.Wine_ID = Wine.Wine_ID
-                            GROUP BY Wine.Winery_ID
-                        ) AS winery_ratings
-                    )AS wineryRating ";
+        $DBQuery .= " AVG(Rating.Rating) AS Average_Rating, ";
     }
-    
+
     $DBQuery = substr($DBQuery, 0, -2);
-    $DBQuery .= " FROM Winery ";
+
+    $DBQuery .= " FROM Wine ";
+    $DBQuery .= " JOIN Winery ON Wine.Winery_ID = Winery.Winery_ID";
 
     if ($addLocation) {
         $DBQuery .= " JOIN Location ON Winery.Location_ID = Location.Location_ID";
     }
 
     if ($addRating) {
-        $DBQuery .= " JOIN Wine ON Winery.Winery_ID = Wine.Winery_ID 
-                    JOIN Rating ON Wine.Wine_ID = Rating.Wine_ID ";
+        $DBQuery .= " LEFT JOIN Rating ON Wine.Wine_ID = Rating.Wine_ID";
     }
 
     $addLocation = false;
     $addRating = false;
 
-    if (isset($jsonData->searchWines)) {
+    $types = "";
+
+    if (isset($jsonData->searchWineries)) {
         $DBQuery .= " WHERE ";
         $params = array();
-        foreach ($jsonData->searchWines as $key => $value) {
-            if ($value == "rating") {
+        foreach ($jsonData->searchWineries as $key => $value) {
+            if ($key == "rating") {
+                $types .= "i";
                 $DBQuery .= "wineryRating >= ? AND ";
-                $params[] = $jsonData->searchWines->rating;
-            } else  if ($value == "location") {
+                $params[] = $jsonData->searchWineries->rating;
+            } else  if ($key == "location") {
+                $types .= "s";
                 $DBQuery .= "Country = ? AND ";
-                $params[] = $jsonData->searchWines->location;
+                $params[] = $jsonData->searchWineries->location;
             } else {
+                $types .= "s";
                 $DBQuery .= "Winery." . $key . " = ? AND ";
                 $params[] = $value;
             }
         }
         $DBQuery = substr($DBQuery, 0, -5);
     }
-    //GROUP BY Winery.Winery_ID
+
+    $DBQuery .= " GROUP BY Winery.Winery_ID";
     if ($jsonData->sort) {
         $DBQuery .= " ORDER BY " . $jsonData->sort;
         if ($jsonData->order) {
             $DBQuery .= " " . $jsonData->order;
         }
     }
+
     // Checking to see if there is a limit on the number of rows returned
     if ($jsonData->limit) {
         $DBQuery .= " LIMIT " . $jsonData->limit;
     }
+    
     $statement = mysqli_prepare($DBConnection, $DBQuery);
+    
+    
     checkStmt($statement, $DBConnection);
 
     if (isset($params)) {
-        $types = str_repeat('s', count($params));
         mysqli_stmt_bind_param($statement, $types, ...$params);
     }
+    
     checkExecute($statement, $DBConnection);
     $result = mysqli_stmt_get_result($statement);
     $output = mysqli_fetch_all($result, MYSQLI_ASSOC);
-
     $returnJson = array("status" => "success", "timestamp" => time(), "data" => $output);
+    // $returnJson = array("status" => "success", "timestamp" => time(), "data" => $DBQuery);
+
     echo json_encode($returnJson);
 }
 
@@ -402,6 +414,7 @@ function deleteWine($jsonData, $DBConnection)
 }
 function updateWine($jsonData, $DBConnection)
 {
+    $types = "";
     if (auth($jsonData, $DBConnection)) 
     {
         if (!isset($jsonData->wineName) || empty($jsonData->wineName || !isset($jsonData->wineYear) || empty($jsonData->wineYear) || !isset($jsonData->wineType) || empty($jsonData->wineType))) {
@@ -468,4 +481,19 @@ function getRecommendations($jsonData, $DBConnection){
     {
         $DBQuery .= " LIMIT " . $jsonData->limit;
     }
+}
+
+function CustomQuery($jsonData, $DBConnection)
+{
+    $DBQuery = $jsonData->Query;
+
+    $statement = mysqli_prepare($DBConnection, $DBQuery);
+    checkStmt($statement, $DBConnection);
+
+    checkExecute($statement, $DBConnection);
+    $result = mysqli_stmt_get_result($statement);
+    $output = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+    $returnJson = array("status" => "success", "timestamp" => time(), "data" => $output);
+    echo json_encode($returnJson);
 }

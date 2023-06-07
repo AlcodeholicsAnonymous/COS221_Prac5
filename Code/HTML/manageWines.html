@@ -7,29 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage</title>
     <link rel="stylesheet" href="../CSS/manageWines.css">
+    <link rel="stylesheet" href="../CSS/Navbar.css">
 </head>
 
-<body>
+<body onload="PopulateNav()">
     <div class="Container">
-        <div class="Navbar">
-            <div class="Logo">
-                <!-- <img src="/Components/Images/Logo.png" alt="Logo"> -->
-            </div>
-            <li class="NavSpacing">
-                <a href="#" class="a">
-                    Wines
-                </a>
-                <a href="../HTML/wineries.html" class="a">
-                    Wineries
-                </a>
-                <a href="#" class="a">
-                    Wine Routes
-                </a>
-                <a href="../HTML/login.html" class="a">
-                    Login
-                </a>
-            </li>
-        </div>
+        <div class="Navbar" id="Navbar"></div>
         <div class="InfoContainer">
             
         
@@ -83,6 +66,7 @@
         </div>
     </div>
     <script src="../JS/manageWines.js"></script>
+    <script src="../JS/Navbar.js"></script>
 </body>
 
 </html>

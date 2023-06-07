@@ -7,6 +7,7 @@ var WineWinery = document.getElementById("Winery");
 var WinePriceFrom = document.getElementById("PriceFrom");
 var WineYearFrom = document.getElementById("YearFrom");
 var WinePicture = document.getElementById("Image");
+
 var Password = () => {
     var cookies = document.cookie.split(";");
     
@@ -38,7 +39,7 @@ function APIRequest(Request)
         else 
         {
             document.getElementById("FillTitle").style.color = "green";
-            document.getElementById("FillTitle").innerHTML = "Succes";
+            document.getElementById("FillTitle").innerHTML = "Success";
 
         }
     }

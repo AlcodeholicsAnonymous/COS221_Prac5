@@ -2,7 +2,7 @@
 var cardContainer = document.getElementById("WineContainer");
 var WineCategory = document.getElementById("WineCategory");
 var WineWinery = document.getElementById("Winery");
-var WineCountry = document.getElementById("Country");
+var Rating = document.getElementById("Rating");
 var WinePriceFrom = document.getElementById("PriceFrom");
 var WinePriceTo = document.getElementById("PriceTo");
 var WineYearFrom = document.getElementById("YearFrom");
@@ -19,10 +19,9 @@ var UserID = getCookie("UserID");
 
 function APIRequest(Request)
 {
+	console.log(Request);
     let postData = 
     {
-        "apikey": "69",
-        "query": "SELECT",
         "type": "CustomQuery",
         "Query": "SELECT * FROM Rating WHERE User_ID = " + UserID + ";"
     };
@@ -35,7 +34,9 @@ function APIRequest(Request)
         const xhttp = new XMLHttpRequest();
         xhttp.onload = function () 
         {
+			// let ReturnData = this.responseText;
             let ReturnData = JSON.parse(this.responseText)
+			console.log(ReturnData);
 
             if (ReturnData.status == "error" || ReturnData.data.length == 0) 
             {
@@ -46,7 +47,7 @@ function APIRequest(Request)
             {
                 let index = 0;
                 let ratingID = 0;
-                while (ReturnData.data[index] && typeof ReturnData.data[index].Name !== 'undefined') 
+                while (ReturnData.data[index] && typeof ReturnData.data[index].Name != 'undefined') 
                 {
                     let card = GenerateWineCard
                     (
@@ -54,7 +55,8 @@ function APIRequest(Request)
                         ReturnData.data[index].Category, ReturnData.data[index].Winery,
                         ReturnData.data[index].Country, ReturnData.data[index].Price,
                         ReturnData.data[index].Year, ratingID, ReturnData.data[index].Wine_ID, UserID, isLoggedIn, // change when user is logged in,
-                        Number(ReturnData.data[index].Average_Rating).toFixed(2)
+                        Number(ReturnData.data[index].Rating).toFixed(2)
+						// 1
                     );
                     cardContainer.appendChild(card);
 
@@ -76,105 +78,15 @@ function APIRequest(Request)
         }
         xhttp.open("POST", "http://127.0.0.1:8080", true);
         xhttp.send(JSON.stringify(Request));
+		
     }
     xhttp.open("POST", "http://127.0.0.1:8080", true);
     xhttp.send(JSON.stringify(postData));
+	console.log(postData);
 }
 
-// function APIRequest(Request) 
-// {
-    
-//     console.log("Users name: " + Name);
-//     console.log("Users surname: " + Surname);
-//     console.log("Users ID: " + UserID);
-//     console.log("Users LoggedIn: " + isLoggedIn);
-// 	let postData =
-// 	{
-// 		apikey: "69",
-// 		query: "SELECT",
-// 		type: "CustomQuery",
-// 		Query: "SELECT * FROM Rating WHERE User_ID = " + UserID + ";"
-// 	};
-
-// 	fetch("http://127.0.0.1:8080",
-// 	{
-// 		method: "POST",
-// 		headers:
-// 		{
-// 			"Content-Type": "application/json"
-// 		},
-// 		body: JSON.stringify(postData)
-// 	})
-// 	.then(response => response.json())
-// 	.then(ReturnDataRatings => {
-// 		fetch("http://127.0.0.1:8080",
-// 			{
-// 				method: "POST",
-// 				headers:
-// 				{
-// 					"Content-Type": "application/json"
-// 				},
-// 				body: JSON.stringify(Request)
-// 			})
-// 			.then(response => response.json())
-// 			.then(ReturnData => {
-// 				if (ReturnData.status == "error" || ReturnData.data.length == 0) 
-// 				{
-// 					const card = generateNoneFound();
-// 					cardContainer.appendChild(card);
-// 				}
-// 				else 
-// 				{
-// 					let index = 0;
-// 					let ratingID = 0;
-// 					while (ReturnData.data[index] && typeof ReturnData.data[index].Name !== "undefined") {
-// 						let card = GenerateWineCard
-// 							(
-// 								ReturnData.data[index].Image,
-// 								ReturnData.data[index].Name,
-// 								ReturnData.data[index].Category,
-// 								ReturnData.data[index].Winery,
-// 								ReturnData.data[index].Country,
-// 								ReturnData.data[index].Price,
-// 								ReturnData.data[index].Year,
-// 								ratingID,
-// 								ReturnData.data[index].Wine_ID,
-// 								UserID,
-// 								isLoggedIn,
-// 								Number(ReturnData.data[index].Average_Rating).toFixed(2)
-// 							);
-
-// 						cardContainer.appendChild(card);
-
-// 						for (let i = 0; i < ReturnDataRatings.data.length; i++) 
-// 						{
-// 							if(ReturnDataRatings.data[i].Wine_ID == ReturnData.data[index].Wine_ID) 
-// 							{
-// 								for (let j = ratingID; j < ratingID + Number(ReturnDataRatings.data[i].Rating); j++) 
-// 								{
-// 									document.getElementById(j).checked = true;
-// 								}
-// 							}
-// 						}
-
-// 						ratingID += 5;
-// 						index++;
-// 					}
-// 				}
-// 			})
-// 			.catch(error => {
-// 				console.log("Error fetching data:", error);
-// 			});
-// 	})
-// 	.catch(error => {
-// 		console.log("Error fetching data:", error);
-// 	});
-// }
-
-
-
-
-function GenerateWineCard(image, name, type, winery, country, price, year, index, WineID, UserID, loggedIn, ExpertRating) {
+function GenerateWineCard(image, name, type, winery, country, price, year, index, WineID, UserID, loggedIn, AverageRating) 
+{
 	const card = document.createElement("div");
 	card.classList.add("Wine");
 
@@ -208,9 +120,18 @@ function GenerateWineCard(image, name, type, winery, country, price, year, index
                   <td>Year:</td>
                   <td>${year}</td>
               </tr>
+			  <tr>
+                  <td>Expert Rating:</td>
+                  <td>${AverageRating}</td>
+              </tr>
               <tr>
+			  ${loggedIn ? `
+			  <td>
+			  	<p>Your Rating: </p>
+			  </td>
+			  
                 <td>
-                    ${loggedIn ? `
+                    
                         <div class="Rating" id="Rating">
                         <label class="circular-checkbox">
                             <input type="checkbox" id="${index}" name="Stars" value="${name}" onclick="Ratings('${name}', 0, ${WineID})">
@@ -234,11 +155,9 @@ function GenerateWineCard(image, name, type, winery, country, price, year, index
                         </label>
                         
                         </div>
-                    ` : ''}
+                    
                 </td>
-                <td>
-                    <p>Expert Rating: ${ExpertRating}</p>
-                </td>
+				` : ''}
               </tr>
           </table>
           
@@ -281,7 +200,7 @@ function ClearFilters()
 	// console.log("Clearing Filters");
 	WineCategory.value = "None";
 	WineWinery.value = "None";
-	WineCountry.value = "None";
+	Rating.value = "None";
 	WinePriceFrom.value = "";
 	WinePriceTo.value = "";
 	WineYearFrom.value = "";
@@ -297,102 +216,118 @@ function ApplyFilters()
 	cardContainer.innerHTML = "";
 	// console.log("Applying Filters");
 
-	let Request =
-		'SELECT '
-		+ 'Wine.Wine_ID, '
-		+ 'Wine.Image, '
-		+ 'Wine.Name, '
-		+ 'Wine.Category, '
-		+ 'Winery.Name AS Winery, '
-		+ 'Location.Country, '
-		+ 'Wine.Price, '
-		+ 'Wine.Year, '
+	
+	let postData = {};
+	postData.type = "getAllWines";
+	postData.returnWines =
+	[
+		"Wine_ID",
+		"Image",
+		"Name",
+		"Category",
+		"winery",
+		"location",
+		"Price",
+		"Year",
+		"rating"
+	];
+	postData.group =
+	[
+		"Wine.Wine_ID",
+		"Wine.Image",
+		"Wine.Name",
+		"Wine.Category",
+		"Winery.Name",
+		"Location.Country",
+		"Wine.Price",
+		"Wine.Year"
+	];
+	// postData.searchWines = 
+	// {
+	// 	"winery": "Penfolds"
+		
+	// };
 
-		+ '( '
-		+ 'SELECT AVG(Rating.Rating) '
-		+ 'FROM Rating '
-		+ 'JOIN User ON Rating.User_ID = User.User_ID '
-		+ 'WHERE '
-		+ 'Rating.Wine_ID = Wine.Wine_ID '
-		+ 'AND User.Is_Expert = 1 '
-		+ ') '
-		+ 'AS Average_Rating '
 
-		+ 'FROM Wine '
-
-		+ 'JOIN Winery ON Wine.Winery_ID = Winery.Winery_ID '
-		+ 'JOIN Location ON Winery.Location_ID = Location.Location_ID '
-		+ 'LEFT JOIN Rating ON Wine.Wine_ID = Rating.Wine_ID ';
-
-
-	if (
+	if 
+	(
 		WineCategory.value != "None"
 		|| WineWinery.value != "None"
-		|| WineCountry.value != "None"
 		|| WinePriceFrom.value != ""
 		|| WinePriceTo.value != ""
 		|| WineYearFrom.value != ""
 		|| WineYearTo.value != ""
-	) {
-		Request += "WHERE "
-		if (WineCategory.value != "None") {
-			// console.log("Wine Category: " + WineCategory.value);
-			Request += 'Wine.Category = "' + WineCategory.value + '" AND ';
+	) 
+	{
+		postData.searchWines = {};
+		if (WineCategory.value != "None") 
+		{
+			postData.searchWines.category = WineCategory.value;
+			console.log("Category: " + WineCategory.value);
 		}
 
-		if (WineWinery.value != "None") {
-			// console.log("Winery: " + WineWinery.value);
-			Request += 'Winery.Name = "' + WineWinery.value + '" AND ';
+		if (WineWinery.value != "None") 
+		{
+			postData.searchWines.winery = WineWinery.value;
+			console.log("Winery: " + WineWinery.value);
 		}
 
-		if (WineCountry.value != "None") {
-			// console.log("Country: " + WineCountry.value);
-			Request += "Location.Country = '" + WineCountry.value + "' AND ";
+		if (WinePriceFrom.value != "") 
+		{
+			postData.searchWines.priceFrom = (Number)(WinePriceFrom.value);
+			console.log("Price From: " + postData.searchWines.priceFrom);
 		}
 
-		if (WinePriceFrom.value != "") {
-			// console.log("Price From: " + WinePriceFrom.value);
-			Request += "Wine.Price >= " + WinePriceFrom.value + " AND ";
+		if (WinePriceTo.value != "") 
+		{
+			postData.searchWines.priceTo = (Number)(WinePriceTo.value);
+			console.log("Price To: " + postData.searchWines.priceTo);
 		}
 
-		if (WinePriceTo.value != "") {
-			// console.log("Price To: " + WinePriceTo.value);
-			Request += "Wine.Price <= " + WinePriceTo.value + " AND ";
+		if (WineYearFrom.value != "") 
+		{
+			postData.searchWines.yearFrom = (Number)(WineYearFrom.value);
+			console.log("Year From: " + postData.searchWines.yearFrom);
 		}
 
-		if (WineYearFrom.value != "") {
-			// console.log("Year From: " + WineYearFrom.value);
-			Request += "Wine.Year >= " + WineYearFrom.value + " AND ";
+		if (WineYearTo.value != "") 
+		{
+			postData.searchWines.yearTo = (Number)(WineYearTo.value);
+			console.log("Year To: " + postData.searchWines.yearTo);
 		}
-
-		if (WineYearTo.value != "") {
-			// console.log("Year To: " + WineYearTo.value);
-			Request += "Wine.Year <= " + WineYearTo.value + " AND ";
-		}
-
-		Request = Request.substring(0, Request.length - 4);
+	}
+	
+	if (Rating.value != "None") 
+	{
+		postData.sort = "Rating";
+		postData.order = Rating.value;
+		console.log("Rating: " + Rating.value);
 	}
 
-	Request += 'GROUP BY '
-		+ 'Wine.Wine_ID, '
-		+ 'Wine.Image, '
-		+ 'Wine.Name, '
-		+ 'Wine.Category, '
-		+ 'Winery.Name, '
-		+ 'Location.Country, '
-		+ 'Wine.Price, '
-		+ 'Wine.Year ';
+	// Request += 'GROUP BY '
+	// 	+ 'Wine.Wine_ID, '
+	// 	+ 'Wine.Image, '
+	// 	+ 'Wine.Name, '
+	// 	+ 'Wine.Category, '
+	// 	+ 'Winery.Name, '
+	// 	+ 'Location.Country, '
+	// 	+ 'Wine.Price, '
+	// 	+ 'Wine.Year ';
 
 
-	console.log(Request);
+	// console.log(Request);
 
-	let postData =
-	{
-		"apikey": "69",
-		"query": "SELECT",
-		"type": "CustomQuery",
-		"Query": Request
-	};
+	// let postData =
+	// {
+	// 	"apikey": "69",
+	// 	"query": "SELECT",
+	// 	"type": "CustomQuery",
+	// 	"Query": Request
+	// };
+
+	
+	  
+
 	APIRequest(postData);
 }
 
@@ -401,17 +336,22 @@ function Ratings(WineName, Rating, WineID)
 	console.clear();
 
 	let index = 0;
-	for (index = 0; index < Stars.length; index++) {
-		if (Stars[index].value == WineName) {
+	for (index = 0; index < Stars.length; index++) 
+	{
+		if (Stars[index].value == WineName) 
+		{
 			let rangeStart = index;
 			let rangeEnd = index + 4;
 			Rating = Rating + index;
 
-			for (let index2 = rangeStart; index2 <= rangeEnd; index2++) {
-				if (index2 <= Rating) {
+			for (let index2 = rangeStart; index2 <= rangeEnd; index2++) 
+			{
+				if (index2 <= Rating) 
+				{
 					Stars[index2].checked = true;
 				}
-				else {
+				else 
+				{
 					Stars[index2].checked = false;
 				}
 
