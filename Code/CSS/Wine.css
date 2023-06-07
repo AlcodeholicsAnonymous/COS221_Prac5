@@ -83,24 +83,33 @@ option
     gap: 10px;
 }
 
-.Wine {
+.Wine 
+{
     background-color: rgba(255, 115, 115, 0.15);
-    /* outline: 2px solid #ff2130 ; */
     width: 32%;
-    height: 32%;
+    height: 38%;
     border-radius: 20px;
     backdrop-filter: blur(15px);
     display: flex;
-    justify-content: space-evenly;
-    font-size: 1.7vh;
+    /* justify-content: space-evenly; */
+    font-size: 2.5vh;
     box-shadow: white 1px 1px 1px 0px;
+    transition: transform 0.3s ease;
+}
+
+.Wine:hover {
+    transform: scale(1.035); /* Increase the size by 10% */
 }
 
 h2{
+    /* outline: solid gold; */
+    height: 20%;
+    width: 100%;
     font-size: 2vh;
     color: white;
     text-align: left;
 }
+
 
 .ButtonContainer 
 {
@@ -126,20 +135,76 @@ h2{
     background-size: auto 100%;
     background-repeat: no-repeat;
     background-position: center;
+    margin-right: 2%;
 }
 
-.WineInfo 
-{
-    /* outline: solid gold; */
-    text-align: center;
+.WineInfo {
+    /* outline: solid pink; */
+    text-align: left;
     color: white;
-    width: 70%;
-}
+    width: 80%;
+  }
+  
 .WineInfoContainer 
 {
+    /* outline: solid green; */
+    width: 100%;
+    height: 70%;
     display: flex;
     flex-direction: column;
     justify-content: left;
+    font-size: 1.5vh;
+}
+
+.Rating
+{
+    /* outline: solid gold; */
+    height: 5vh;
+    width: 100%;
+    display: flex;
+    /* justify-content: space-evenly; */
+    /* margin-left: -5%; */
+}
+
+.circular-checkbox
+{
+    /* outline: solid pink; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.circular-checkbox input[type="checkbox"] 
+{
+    display: none;
+}
+
+.circular-checkbox .checkmark2 
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 3vh;
+    height: 3.5vh;
+    position: relative;
+    overflow: hidden;
+    font-size: 3vh;
+    line-height: 1.4;
+    text-align: center;
+    color: black;
+    transition: color 0.3s;
+    /* outline: solid gold; */
+}
+
+.circular-checkbox .checkmark2:before 
+{
+    content: "★";
+    display: block;
+}
+
+.circular-checkbox input[type="checkbox"]:checked+.checkmark2 
+{
+    color: gold;
 }
 
 table 
