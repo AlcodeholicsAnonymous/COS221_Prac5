@@ -7,7 +7,12 @@
 (optional)"return":""(array of attributes you are looking for. If all, don't request from API),
 
 //for wines page
-(optional)"type":"",
+(optional)"type":"
+    "getAllWines",
+    "getAllLocations",
+    "getAllWineries",
+    "getAllUsers",
+",
 (optional)"winery":"",
 (optional)"country":"",
 (optional)"priceFrom":"",
