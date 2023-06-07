@@ -1,12 +1,8 @@
 
 var cardContainer = document.getElementById("WineContainer");
-var WineCategory = document.getElementById("WineCategory");
-var WineWinery = document.getElementById("Winery");
-var Rating = document.getElementById("Rating");
-var WinePriceFrom = document.getElementById("PriceFrom");
-var WinePriceTo = document.getElementById("PriceTo");
-var WineYearFrom = document.getElementById("YearFrom");
-var WineYearTo = document.getElementById("YearTo");
+var filterWinery = document.getElementById("Winery");
+var filterRating = document.getElementById("Rating");
+var filterCountry = document.getElementById("Country");
 var Stars = document.getElementsByName("Stars");
 var RatingDiv = document.getElementById("Rating");
 
@@ -154,6 +150,7 @@ function ClearFilters()
 
 function ApplyFilters() 
 {
+    
 	// let Query = 'SELECT '
 	// 	+ 'Winery.Name AS Winery, '
 	// 	+ 'Location.Country, '
@@ -176,14 +173,66 @@ function ApplyFilters()
 
 	// console.log(Query);
 
+    
+
 	let Request =
 	{
 		"type" : "getAllWineries",
 		"returnWineries" : ["Wine_Tasting", "Admin_ID", "name", "location", "rating", "Image"],
+        "searchWineries" : {},
 		"sort" : "country",
 		"order" : "ASC",
 		"limit" : 20,
 	}
+
+    cardContainer.innerHTML = "";
+
+    let postData = {};
+	postData.type = "getAllWines";
+	postData.returnWines =
+	[
+		"Winery_ID",
+		"Image",
+		"Name",
+		"location",
+		"rating",
+        "tasting"
+	];
+	postData.group =
+	[
+		"Winery.Winery_ID",
+		"Winery.Image",
+		"Winery.Name",
+		"Location.Country"
+	];
+
+    if 
+	(
+		filterWinery.value != "None"
+		|| filterCountry.value != "None"
+		|| filterRating.value != ""
+	) 
+	{
+		postData.searchWines = {};
+		if (filterWinery.value != "None") 
+		{
+			postData.searchWines.name = filterWinery.value;
+			console.log("Winery: " + filterWinery.value);
+		}
+
+		if (filterCountry.value != "None") 
+		{
+			postData.searchWines.location = filterCountry.value;
+			console.log("Country: " + filterCountry.value);
+		}
+
+		if (filterRating.value != "") 
+		{
+			postData.searchWines.rating = (Number)(filterRating.value);
+			console.log("wineryRating: " + postData.searchWines.rating);
+		}
+	}
+
 	APIRequest(Request);
 }
 
