@@ -192,12 +192,14 @@ function ApplyFilters()
 	postData.returnWines =
 	[
 		"Winery_ID",
+        "Admin_ID",
 		"Image",
-		"Name",
+		"name",
 		"location",
 		"rating",
-        "tasting"
+        "Wine_Tasting"
 	];
+    
 	postData.group =
 	[
 		"Winery.Winery_ID",
