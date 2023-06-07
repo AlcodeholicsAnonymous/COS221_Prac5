@@ -10,10 +10,10 @@
 ## To use the Website:
 1. Register a user on the website.
 2. Login to the website.
-3. Wines shows all wines which you can sort and filter.
-4. Wineries shows all wineries which you can sort and filter.
-5. Manage Winery allows you to add, edit and delete wines.
-6. Add Wine allows you to add a wine to the database for the winery which you manage.
+3. The "Wines" tab shows all wines which you can sort filter and rate.
+4. The "Wineries" tab shows all wineries which you can sort and filter.
+5. The "Manage Winery" tab allows you to edit and delete wines from the database for the winery which you manage. (only avaiable to admin users)
+6. The "Add Wine" tab allows you to add a wine to the database for the winery which you manage. (only avaiable to admin users)
 
->login is required to use manage wineries and rate wines.
+>login is required to use the "Manage Wineries" tab and to be able to rate wines.
 When you manage a winery it will automatically get the winery that you manage and use it to add/edit/delete wines.
