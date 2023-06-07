@@ -344,7 +344,6 @@ function addWine($jsonData, $DBConnection)
         $DBQuery = "INSERT INTO Wine (Winery_ID, ";
         $types = "i";
         $Winery_ID = getManagedWinery($jsonData, $DBConnection);
-        echo $Winery_ID;
         $params[] = $Winery_ID;
         foreach ($jsonData->parameters as $key => $value) 
         {
@@ -360,7 +359,7 @@ function addWine($jsonData, $DBConnection)
         mysqli_stmt_bind_param($statement, $types, ...$params);
         checkExecute($statement, $DBConnection);
 
-        $returnJson = array("status" => "success", "timestamp" => time());
+        $returnJson = array("status" => "success", "timestamp" => time(), "data" => "Wine Added Successfully");
         echo json_encode($returnJson);
     }
     else
@@ -428,9 +427,9 @@ function updateWine($jsonData, $DBConnection)
         $types .= "isis";
         mysqli_stmt_bind_param($statement, $types, ...$params);
         checkExecute($statement, $DBConnection);
+        
         $result = mysqli_stmt_get_result($statement);
-        $output = mysqli_fetch_all($result, MYSQLI_ASSOC);
-        $returnJson = array("status" => "success", "timestamp" => time(), "data" => $output);
+        $returnJson = array("status" => "success", "timestamp" => time(), "data" => "Wine Updated Successfully");
         echo json_encode($returnJson);
     }
 }

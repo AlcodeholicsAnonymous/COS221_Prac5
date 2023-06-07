@@ -1,3 +1,4 @@
+
 var cardContainer = document.getElementById("WineContainer");
 var WineCategory = document.getElementById("WineCategory");
 var WineName = document.getElementById("WineName");
@@ -6,11 +7,21 @@ var WineWinery = document.getElementById("Winery");
 var WinePriceFrom = document.getElementById("PriceFrom");
 var WineYearFrom = document.getElementById("YearFrom");
 var WinePicture = document.getElementById("Image");
-var Password = getCookie("Password");
-
-
-
-
+var Password = () => {
+    var cookies = document.cookie.split(";");
+    
+    for (var i = 0; i < cookies.length; i++) {
+      var cookie = cookies[i].trim();
+      
+      if (cookie.indexOf("password=") === 0) {
+        var password = cookie.substring("password=".length);
+        password = decodeURIComponent(password);
+        console.log("Found password: " + password);
+        return password;
+      }
+    }
+}
+Password = Password();
 function APIRequest(Request)
 {
     const xhttp = new XMLHttpRequest();
@@ -26,7 +37,6 @@ function APIRequest(Request)
         }
         else 
         {
-           
             document.getElementById("FillTitle").style.color = "green";
             document.getElementById("FillTitle").innerHTML = "Succes";
 

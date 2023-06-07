@@ -5,10 +5,21 @@ var WineType = document.getElementById("Type");
 var WinePriceFrom = document.getElementById("PriceFrom");
 var WineYearFrom = document.getElementById("YearFrom");
 var WineAvailable = document.getElementById("Available");
-var Password = getCookie("Password");
-
-
-
+var Password = () => {
+    var cookies = document.cookie.split(";");
+    
+    for (var i = 0; i < cookies.length; i++) {
+      var cookie = cookies[i].trim();
+      
+      if (cookie.indexOf("password=") === 0) {
+        var password = cookie.substring("password=".length);
+        password = decodeURIComponent(password);
+        console.log("Found password: " + password);
+        return password;
+      }
+    }
+}
+Password = Password();
 function APIRequest(Request)
 {
     const xhttp = new XMLHttpRequest();
@@ -111,7 +122,6 @@ function Update()
 
 function Delete()
 {
-    cardContainer.innerHTML = "";
     console.log("Deleting");
 
 
