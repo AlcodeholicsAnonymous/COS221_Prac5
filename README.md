@@ -3,7 +3,7 @@ To run the Website:
 1. Use the provided sql dump to populate the database.
 2. Change API.php and config.php to use your database credentials.
 3. Run the API using the command: php -S 127.0.0.1:8080 in the PHP directory
-4. Run the PHP server, we recommend using the vscode extension php server or something similar.
+4. Run the PHP server, we recommend using the vscode extension: php server or something similar.
 5. Navigate to the website using the url: localhost:3000/HTML/Wine.html
 6. Enjoy the website.
 
