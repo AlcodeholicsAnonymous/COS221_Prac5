@@ -1,74 +1,74 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add</title>
-    <link rel="stylesheet" href="../CSS/addWines.css">
-    <link rel="stylesheet" href="../CSS/Navbar.css">
-</head>
-
-<body onload="PopulateNav()">
-    <div class="Container">
-        <div class="Navbar" id="Navbar"></div>
-        <div class="InfoContainer" id = "infoCon">
-            <div class="FilterContainer">
-                <div id= "FillTitle" style="font-size: 4.5vh;">Fill in Fields</div>
-
-                <div>
-                    <select class="Input" id="Winery" hidden = "true">
-                        <option value="None">---</option>
-                    </select>
-                </div>
-                <div>
-                    <label>Wine Category</label><br>
-                    <select class="Input" id="WineCategory">
-                        <option value="None">---</option>
-                        <option value="Red">Red</option>
-                        <option value="White">White</option>
-                        <option value="Rose">Rose</option>
-                        <option value="Dessert">Dessert</option>
-                        <option value="Sparkling">Sparkling</option>
-                    </select>
-                </div>
-                <div>
-                    <label>Type</label> <br>
-                    <input type="text" class="AgeInput" id="Type" required ="required">
-                </div>
-                
-                <div>
-                    <label>Name</label> <br>
-                    <input type="text" class="AgeInput" id="WineName" required ="required">
-                </div>
-               
-                <div>
-                    <label>Price</label> <br>
-                    <input type="number" class="AgeInput" id="PriceFrom" required ="required">
-                   
-                </div>
-                <div>
-                    <label>Wine Year</label><br>
-                    <input type="number" class="AgeInput" id="YearFrom" required ="required">
-
-                </div>
-                <div>
-                    <label>Insert Image</label><br>
-                    <input type="text" class="AgeInput" id="Image" required ="required">
-                </div>
-                <div class="ButtonContainer">
-                    <button class="Button" onclick="AddWine()">Add</button>
-                    <button class="Button" onclick="Clear()">Clear</button>
-                </div>
-
-
-            </div>
-            
-        </div>
-    </div>
-    <script src="../JS/addWines.js"></script>
-    <script src="../JS/Navbar.js"></script>
-</body>
-
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add</title>
+    <link rel="stylesheet" href="../CSS/addWines.css">
+    <link rel="stylesheet" href="../CSS/Navbar.css">
+</head>
+
+<body onload="PopulateNav()">
+    <div class="Container">
+        <div class="Navbar" id="Navbar"></div>
+        <div class="InfoContainer" id = "infoCon">
+            <div class="FilterContainer">
+                <div id= "FillTitle" style="font-size: 4.5vh;">Fill in Fields</div>
+
+                <div>
+                    <select class="Input" id="Winery" hidden = "true">
+                        <option value="None">---</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Wine Category</label><br>
+                    <select class="Input" id="WineCategory">
+                        <option value="None">---</option>
+                        <option value="Red">Red</option>
+                        <option value="White">White</option>
+                        <option value="Rose">Rose</option>
+                        <option value="Dessert">Dessert</option>
+                        <option value="Sparkling">Sparkling</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Type</label> <br>
+                    <input type="text" class="AgeInput" id="Type" required ="required">
+                </div>
+                
+                <div>
+                    <label>Name</label> <br>
+                    <input type="text" class="AgeInput" id="WineName" required ="required">
+                </div>
+               
+                <div>
+                    <label>Price</label> <br>
+                    <input type="number" class="AgeInput" id="PriceFrom" required ="required">
+                   
+                </div>
+                <div>
+                    <label>Wine Year</label><br>
+                    <input type="number" class="AgeInput" id="YearFrom" required ="required">
+
+                </div>
+                <div>
+                    <label>Insert Image</label><br>
+                    <input type="text" class="AgeInput" id="Image" required ="required">
+                </div>
+                <div class="ButtonContainer">
+                    <button class="Button" onclick="AddWine()">Add</button>
+                    <button class="Button" onclick="Clear()">Clear</button>
+                </div>
+
+
+            </div>
+            
+        </div>
+    </div>
+    <script src="../JS/addWines.js"></script>
+    <script src="../JS/Navbar.js"></script>
+</body>
+
 </html>
