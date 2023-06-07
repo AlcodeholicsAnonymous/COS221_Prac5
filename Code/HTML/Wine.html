@@ -1,89 +1,89 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wines</title>
-    <link rel="stylesheet" href="../CSS/Wine.css">
-    <link rel="stylesheet" href="../CSS/Navbar.css">
-</head>
-
-<body onload="ApplyFilters(), PopulateNav()">
-    <div class="Container">
-        <div class="Navbar" id="Navbar"></div>
-        <div class="InfoContainer">
-            <div class="FilterContainer">
-                <div style="font-size: 4.5vh;">Filters</div>
-                <div>
-                    <label>Wine Category</label><br>
-                    <select class="Input" id="WineCategory">
-                        <option value="None">---</option>
-                        <option value="Red">Red</option>
-                        <option value="White">White</option>
-                        <option value="Rose">Rose</option>
-                        <option value="Sparkling">Sparkling</option>
-                        <option value="Dessert">Dessert</option>
-                    </select>
-                </div>
-                <div>
-                    <label>Winery</label>
-                    <select class="Input" id="Winery">
-                        <option value="None">---</option>
-                        <option value="Château Margaux">Château Margaux</option>
-                        <option value="Domaine de la Romanée-Conti">Domaine de la Romanée-Conti</option>
-                        <option value="Bodegas Torres">Bodegas Torres</option>
-                        <option value="Tenuta San Guido">Tenuta San Guido</option>
-                        <option value="Penfolds">Penfolds</option>
-                        <option value="Domaine Tempier">Domaine Tempier</option>
-                        <option value="Viña Concha y Toro">Viña Concha y Toro</option>
-                        <option value="Maselva">Maselva</option>
-                        <option value="Antinori">Antinori</option>
-                        <option value="Ernesto Ruffo">Ernesto Ruffo</option>
-                        <option value="Gaja">Gaja</option>
-                        <option value="Domaine Leflaive">Domaine Leflaive</option>
-                        <option value="Joseph Drouhin">Joseph Drouhin</option>
-                        <option value="Domaine Coche-Dury">Domaine Coche-Dury</option>
-                        <option value="Patrick Javillier">Patrick Javillier</option>
-                        <option value="Keller">Keller</option>
-                        <option value="F.X. Pichler">F.X. Pichler</option>
-                        <option value="Château Haut-Brion">Château Haut-Brion</option>
-                        <option value="Antica Terra">Antica Terra</option>
-                        <option value="Minuty">Minuty</option>
-                        <option value="Château d Esclans">Château d'Esclans</option>
-                    </select>
-                </div>
-                <div>
-                    <label>Sort (Rating)</label>
-                    <select class="Input" id="Rating">
-                        <option value="None">---</option>
-                        <option value="DESC">High - Low</option>
-                        <option value="ASC">Low - High</option>
-                    </select>
-                </div>
-                <div>
-                    <label>Price</label> <br>
-                    <input type="number" class="AgeInput" id="PriceFrom">
-                    to
-                    <input type="number" class="AgeInput" id="PriceTo">
-                </div>
-                <div>
-                    <label>Wine Year</label><br>
-                    <input type="number" class="AgeInput" id="YearFrom">
-                    to
-                    <input type="number" class="AgeInput" id="YearTo">
-                </div>
-                <div class="ButtonContainer">
-                    <button class="Button" onclick="ApplyFilters()">Apply Filters</button>
-                    <button class="Button" onclick="ClearFilters()">Clear Filters</button>
-                </div>
-            </div>
-            <div class="WineContainer" id="WineContainer"></div>
-        </div>
-    </div>
-    <script src="../JS/wine.js"></script>
-    <script src="../JS/Navbar.js"></script>
-</body>
-
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wines</title>
+    <link rel="stylesheet" href="../CSS/Wine.css">
+    <link rel="stylesheet" href="../CSS/Navbar.css">
+</head>
+
+<body onload="ApplyFilters(), PopulateNav()">
+    <div class="Container">
+        <div class="Navbar" id="Navbar"></div>
+        <div class="InfoContainer">
+            <div class="FilterContainer">
+                <div style="font-size: 4.5vh;">Filters</div>
+                <div>
+                    <label>Wine Category</label><br>
+                    <select class="Input" id="WineCategory">
+                        <option value="None">---</option>
+                        <option value="Red">Red</option>
+                        <option value="White">White</option>
+                        <option value="Rose">Rose</option>
+                        <option value="Sparkling">Sparkling</option>
+                        <option value="Dessert">Dessert</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Winery</label>
+                    <select class="Input" id="Winery">
+                        <option value="None">---</option>
+                        <option value="Château Margaux">Château Margaux</option>
+                        <option value="Domaine de la Romanée-Conti">Domaine de la Romanée-Conti</option>
+                        <option value="Bodegas Torres">Bodegas Torres</option>
+                        <option value="Tenuta San Guido">Tenuta San Guido</option>
+                        <option value="Penfolds">Penfolds</option>
+                        <option value="Domaine Tempier">Domaine Tempier</option>
+                        <option value="Viña Concha y Toro">Viña Concha y Toro</option>
+                        <option value="Maselva">Maselva</option>
+                        <option value="Antinori">Antinori</option>
+                        <option value="Ernesto Ruffo">Ernesto Ruffo</option>
+                        <option value="Gaja">Gaja</option>
+                        <option value="Domaine Leflaive">Domaine Leflaive</option>
+                        <option value="Joseph Drouhin">Joseph Drouhin</option>
+                        <option value="Domaine Coche-Dury">Domaine Coche-Dury</option>
+                        <option value="Patrick Javillier">Patrick Javillier</option>
+                        <option value="Keller">Keller</option>
+                        <option value="F.X. Pichler">F.X. Pichler</option>
+                        <option value="Château Haut-Brion">Château Haut-Brion</option>
+                        <option value="Antica Terra">Antica Terra</option>
+                        <option value="Minuty">Minuty</option>
+                        <option value="Château d Esclans">Château d'Esclans</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Sort (Rating)</label>
+                    <select class="Input" id="Rating">
+                        <option value="None">---</option>
+                        <option value="DESC">High - Low</option>
+                        <option value="ASC">Low - High</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Price</label> <br>
+                    <input type="number" class="AgeInput" id="PriceFrom">
+                    to
+                    <input type="number" class="AgeInput" id="PriceTo">
+                </div>
+                <div>
+                    <label>Wine Year</label><br>
+                    <input type="number" class="AgeInput" id="YearFrom">
+                    to
+                    <input type="number" class="AgeInput" id="YearTo">
+                </div>
+                <div class="ButtonContainer">
+                    <button class="Button" onclick="ApplyFilters()">Apply Filters</button>
+                    <button class="Button" onclick="ClearFilters()">Clear Filters</button>
+                </div>
+            </div>
+            <div class="WineContainer" id="WineContainer"></div>
+        </div>
+    </div>
+    <script src="../JS/wine.js"></script>
+    <script src="../JS/Navbar.js"></script>
+</body>
+
 </html>
